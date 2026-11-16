@@ -30,6 +30,14 @@ h2{font:800 clamp(32px,5vw,48px)/1.05 "Baloo 2",sans-serif;margin:0}
 .by{color:var(--dim);font-size:20px;margin:2px 0 14px}
 .fig{position:relative;height:clamp(300px,58vw,540px);border-radius:18px;overflow:hidden;background:#05071a;border:1px solid var(--line)}
 .fig>canvas{position:absolute;inset:0;width:100%;height:100%}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.fig canvas{cursor:pointer}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.acts button{font:700 17px "Baloo 2",sans-serif;border:none;color:#10132a}
+.acts [data-a=ufo]{background:#7ee36b}.acts [data-a=rock]{background:#ff9d4d}.acts [data-a=ship]{background:#cfd8e6}
+.acts button:active{transform:scale(.96)}
+.cap{color:var(--dim);font-size:18px;margin:8px 0 0;min-height:27px}
+h3{font:600 22px/1.2 "Baloo 2",sans-serif;margin:22px 0 0}
 .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:16px}
 .f{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
 .f b{display:block;font:600 15px "Baloo 2",sans-serif;color:var(--dim)}
@@ -53,13 +61,17 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
     <button data-s="1" aria-pressed="true">Normal</button>
     <button data-s="2.6" aria-pressed="false">Zoom!</button>
   </div>
-  <button id="names" aria-pressed="true">Moon names</button>
+  <button id="names" aria-pressed="true">Names</button>
 </div>
 
 <section class="band">
-  <h2>55 Flizza 3.0</h2>
-  <p class="by">by Jamie · the freezing planet of the 55 Flizza family</p>
-  <div class="fig"><canvas id="c1" aria-label="Animation of 55 Flizza 3.0, a dark blue planet with three gray and black rings and three moons orbiting"></canvas></div>
+  <h2>The 55 Flizza family</h2>
+  <p class="by">by Jamie · a sun and three planets: hot, just right, and freezing</p>
+  <div class="tabs" id="t1" role="group" aria-label="Choose a view"></div>
+  <div class="acts" id="a1"></div>
+  <div class="fig"><canvas id="c1" aria-label="Animation of Jamie's 55 Flizza planets and moons"></canvas></div>
+  <p class="cap" id="p1"></p>
+  <h3>55 Flizza 3.0, from Jamie's drawing</h3>
   <div class="facts">
     <div class="f"><b>Size</b><span>1½ times as big as Neptune</span></div>
     <div class="f"><b>Weather zones</b><span>From −25°F to 25°F. Brrr!</span></div>
@@ -69,12 +81,21 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
     <div class="f"><b>Rings and moons</b><span>3 dark rings, 3 moons numbered by how close they are</span></div>
     <div class="f"><b>Moon fact</b><span>Wind on 55 Flizza 3.2 got up to 1,050 mph</span></div>
   </div>
+  <h3>Its sisters, from what Jamie told Claude</h3>
+  <div class="facts">
+    <div class="f"><b>55 Flizza 1.0</b><span>Closest to the sun and really hot, with nine toasty moons</span></div>
+    <div class="f"><b>55 Flizza 2.0</b><span>A little cooler than Earth, a planet you could live on</span></div>
+  </div>
+  <p class="note">Jamie hasn't drawn 1.0 and 2.0 yet, so their colours and 2.0's two moons are Claude's guesses.</p>
 </section>
 
 <section class="band">
   <h2>95 Cinna 1.0</h2>
   <p class="by">by Miles · the patchwork planet with nine moons</p>
+  <div class="tabs" id="t2" role="group" aria-label="Choose a view"></div>
+  <div class="acts" id="a2"></div>
   <div class="fig"><canvas id="c2" aria-label="Animation of 95 Cinna 1.0, a colourful patchwork planet with a rainbow ring and nine moons orbiting"></canvas></div>
+  <p class="cap" id="p2"></p>
   <div class="facts">
     <div class="f"><b>Planet colours</b><span>Blue with brown, pink, red, orange, light green and teal patches</span></div>
     <div class="f"><b>Ring</b><span>Every colour except gold and silver</span></div>
@@ -83,7 +104,7 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
   <ul class="moons" id="mlist"></ul>
   <p class="note">The crinkles and the scribbled-out moon are cleaned up. Nothing else was left out.</p>
 </section>
-<footer>Tap a speed to make the moons go faster or slower.</footer>
+<footer>Tap "Solar system" to zoom out, then tap a planet to zoom back in. Blown-up planets rebuild themselves.</footer>
 
 <script>
 {
@@ -93,9 +114,10 @@ const blob=(lon,lat,size,color)=>{const n=10,pts=[];for(let i=0;i<n;i++){const a
 const scatter=(n,colors,smin,smax,latMax)=>Array.from({length:n},(_,i)=>blob(i*360/n+rnd()*20,(rnd()*2-1)*latMax,smin+rnd()*(smax-smin),colors[i%colors.length]));
 const stripes=(c0,wave=0,offset=0)=>{const colors=[...c0,...c0];const w=360/colors.length;return colors.map((c,i)=>[offset+i*w,offset+(i+1)*w,c,wave]);};
 
-/* Jamie: 55 Flizza 3.0 */
+/* Jamie: 55 Flizza 3.0 (from the drawing) */
 const cracks=Array.from({length:8},(_,i)=>{let lon=i*45+rnd()*20,lat=-65;const p=[];while(lat<65){p.push([lon,lat]);lat+=8+rnd()*8;lon+=(rnd()-.5)*28;}return p;});
-const jamie={
+const J3={key:'3.0',name:'55 Flizza 3.0',a0:4.2,
+  cap:'55 Flizza 3.0 · Jamie\'s drawing: freezing, with 3 dark rings and 3 moons',
   planet:{base:'#3a54a8',outline:'#131838',spin:10,
     bands:[[38,90,'#3d3290'],[62,90,'#2d2475'],[-90,-58,'#2f4592']],
     patches:scatter(9,['#4f69c0','#334a9c','#4a3fa3'],14,26,55),lines:cracks,lineColor:'#1a2050'},
@@ -105,10 +127,32 @@ const jamie={
     {name:'55 Flizza 3.2',r:.18,o:2.65,a:2.6,body:{base:'#7c7d85',spin:24,patches:scatter(5,['#5f6068','#9a9ba2'],12,22,50)}},
     {name:'55 Flizza 3.3',r:.46,o:3.6,a:4.4,body:{base:'#3c3d44',spin:14,patches:scatter(7,['#2a2a30','#55565e','#33343a'],12,24,60)}}
   ]};
+/* Jamie: 55 Flizza 1.0, really hot, nine hot moons (Claude's guess at the look) */
+const hot=['#ff8a3d','#e2462a','#ffc04a','#c83a1c','#ff9f5a','#f2702e','#ffd36b','#b8321a','#ff7b4a'];
+const J1={key:'1.0',name:'55 Flizza 1.0',a0:1.1,
+  cap:'55 Flizza 1.0 · really hot and toasty, with nine hot moons (colours are Claude\'s guess)',
+  planet:{base:'#d2491f',outline:'#4a1206',spin:14,bands:[[60,90,'#b8371a'],[-90,-60,'#b8371a']],
+    patches:scatter(14,['#f28c28','#8a1f10','#ffc24b','#a8260f'],10,22,60)},
+  rings:[],
+  moons:hot.map((c,i)=>({name:'55 Flizza 1.'+(i+1),r:.12+(i%3)*.04,o:1.7+i*.24,a:i*2.1,
+    body:{base:c,spin:22+i*2,patches:scatter(4,['#7a1a0a','#ffe08a'],12,22,55)}}))};
+/* Jamie: 55 Flizza 2.0, a little cooler than Earth, livable (Claude's guess at the look) */
+const J2={key:'2.0',name:'55 Flizza 2.0',a0:2.9,
+  cap:'55 Flizza 2.0 · a little cooler than Earth, a planet you could live on (Claude\'s guess)',
+  planet:{base:'#2f7fd0',outline:'#0d2a4a',spin:12,bands:[[72,90,'#eef4ff'],[-90,-70,'#eef4ff']],
+    patches:[...scatter(8,['#5fae5a','#3f8a4a','#c9b27a','#76c06a'],14,26,50),...scatter(7,['rgba(255,255,255,.75)'],6,12,60)]},
+  rings:[],
+  moons:[
+    {name:'55 Flizza 2.1',r:.15,o:1.9,a:1,body:{base:'#a6a7ad',spin:26,patches:scatter(4,['#85868c'],12,20,50)}},
+    {name:'55 Flizza 2.2',r:.22,o:2.6,a:3.6,body:{base:'#d9cdb0',spin:20,patches:scatter(5,['#b8ab8c'],12,22,50)}}
+  ]};
+const jamie={sun:{c:['#fffbe0','#ffd04a','#ff8a1f']},planets:[J1,J2,J3],start:'3.0',
+  syscap:'The whole 55 Flizza family orbiting its sun. Tap a planet to zoom in.'};
 
 /* Miles: 95 Cinna 1.0 */
 const mp=['#f0a24a','#e8786f','#9b7b6b','#f3a0c4','#8fd6a0','#45b5a8','#bfe39a'];
-const miles={
+const M1={key:'1.0',name:'95 Cinna 1.0',a0:.6,
+  cap:'95 Cinna 1.0 · Miles\'s drawing: a patchwork planet with nine moons',
   planet:{base:'#9d9bd8',outline:'#1d1a33',spin:12,patches:scatter(15,mp,13,22,58),stroke:true},
   rings:['#e98aa8','#7fc4e8','#f0a24a','#9b7b6b','#8fd6a0','#e8786f','#b49be0','#45b5a8','#7d7d86','#f3a0c4'].map((c,i)=>[1.2+i*.055,1.2+i*.055+.045,c]),
   moons:[
@@ -124,8 +168,10 @@ const miles={
   ].map(([n,base,s,desc],i)=>({name:'95 Cinna '+n,desc,base,r:i==8?.3:.15+(i%3)*.025,o:1.85+i*.27,a:i*2.4,
     body:{base,spin:20+i*3,outline:'#1d1a33',patches:s.patches?scatter(6,s.patches,14,24,55):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))
 };
+const miles={sun:{c:['#fffde8','#ffe066','#ffa63d']},planets:[M1],start:'1.0',
+  syscap:'95 Cinna 1.0 and its nine moons orbiting their sun. Tap the planet to zoom in.'};
 
-document.getElementById('mlist').innerHTML=miles.moons.map(m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`).join('');
+document.getElementById('mlist').innerHTML=M1.moons.map(m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`).join('');
 
 const proj=(lon,lat,rot)=>{const L=(lon+rot)*D,B=lat*D;let x=Math.cos(B)*Math.sin(L),y=-Math.sin(B);const z=Math.cos(B)*Math.cos(L);if(z<0){const k=Math.hypot(x,y)||1;x/=k;y/=k;}return[x,y,z];};
 function shape(ctx,pts){const n=pts.length;ctx.beginPath();ctx.moveTo((pts[n-1][0]+pts[0][0])/2,(pts[n-1][1]+pts[0][1])/2);for(let i=0;i<n;i++){const p=pts[i],q=pts[(i+1)%n];ctx.quadraticCurveTo(p[0],p[1],(p[0]+q[0])/2,(p[1]+q[1])/2);}ctx.closePath();}
@@ -158,28 +204,218 @@ function ringHalf(ctx,cx,cy,ri,ro,t,front,col){
 }
 
 const stars=Array.from({length:160},()=>[rnd(),rnd(),rnd()*1.3+.3,rnd()*6]);
-let showNames=true,speed=1,playing=true,sim=0,last=performance.now();
+let showNames=true,speed=1,playing=true,sim=0,clock=0,last=performance.now();
+const ease=x=>x<=0?0:x>=1?1:x*x*(3-2*x);
 
-function scene(cv,sys){
-  const ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;
-  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
-  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
-  stars.forEach(([x,y,s,p])=>{ctx.fillStyle=`rgba(255,255,255,${.35+.35*Math.sin(sim*1.5+p)})`;ctx.fillRect(x*W,y*H,s,s);});
-  const t=W<600?.42:.3,omax=Math.max(...sys.moons.map(m=>m.o+m.r)),cx=W/2,cy=H/2;
-  const U=Math.min((W/2-14)/omax,(H/2-14)/Math.max(1.15,omax*t+.35));
-  const ms=sys.moons.map(m=>{const a=m.a+sim*.9/Math.pow(m.o,1.5),s=Math.sin(a);return{m,a,s,x:cx+Math.cos(a)*m.o*U,y:cy+s*m.o*U*t,r:m.r*U*(1+.12*s)};}).sort((p,q)=>p.s-q.s);
-  const orbit=(front)=>{ctx.setLineDash([3,6]);ctx.lineWidth=1;ctx.strokeStyle='rgba(200,210,255,.18)';sys.moons.forEach(m=>{ctx.beginPath();ctx.ellipse(cx,cy,m.o*U,m.o*U*t,0,front?0:Math.PI,front?Math.PI:2*Math.PI);ctx.stroke();});ctx.setLineDash([]);};
+function bg(ctx,W,H){stars.forEach(([x,y,s,p])=>{ctx.fillStyle=`rgba(255,255,255,${.35+.35*Math.sin(sim*1.5+p)})`;ctx.fillRect(x*W,y*H,s,s);});}
+
+/* one planet with its rings and moons; k squeezes moon orbits for the zoomed-out view */
+function group(ctx,cx,cy,U,t,P,o){
+  const k=o.k||1,mo=m=>1.4+(m.o-1.4)*k;
+  const ms=P.moons.map(m=>{const a=m.a+sim*.9/Math.pow(m.o,1.5),s=Math.sin(a),R=mo(m)*U;
+    return{m,s,x:cx+Math.cos(a)*R,y:cy+s*R*t,r:Math.max(o.min||0,m.r*U*(1+.12*s))};}).sort((p,q)=>p.s-q.s);
+  const orbit=front=>{if(!o.paths)return;ctx.setLineDash([3,6]);ctx.lineWidth=1;ctx.strokeStyle='rgba(200,210,255,.18)';
+    P.moons.forEach(m=>{ctx.beginPath();ctx.ellipse(cx,cy,mo(m)*U,mo(m)*U*t,0,front?0:Math.PI,front?Math.PI:2*Math.PI);ctx.stroke();});ctx.setLineDash([]);};
   const moon=p=>{body(ctx,p.x,p.y,p.r,p.m.body,sim*p.m.body.spin);
-    if(showNames){ctx.font=`${W<600?12:14}px "Patrick Hand",sans-serif`;ctx.fillStyle=p.s<0?'rgba(230,234,255,.5)':'rgba(240,243,255,.95)';ctx.textAlign=p.x>cx?'left':'right';ctx.fillText(p.m.name,p.x+(p.x>cx?1:-1)*(p.r+4),p.y-p.r*.4);}};
+    if(o.names){ctx.font=`${o.small?12:14}px "Patrick Hand",sans-serif`;ctx.fillStyle=p.s<0?'rgba(230,234,255,.5)':'rgba(240,243,255,.95)';
+      ctx.textAlign=p.x>cx?'left':'right';ctx.fillText(p.m.name,p.x+(p.x>cx?1:-1)*(p.r+4),p.y-p.r*.4);}};
+  const life=P.dead?clock-P.dead:9;if(life>3.6)P.dead=null;
+  const sc=life<2.4?0:life<3.6?ease((life-2.4)/1.2):1,u=U*sc;
   orbit(false);ms.filter(p=>p.s<0).forEach(moon);
-  sys.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*U,b*U,t,false,c));
-  body(ctx,cx,cy,U,sys.planet,sim*sys.planet.spin);
-  sys.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*U,b*U,t,true,c));
+  if(sc>0){P.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*u,b*u,t,false,c));
+  body(ctx,cx,cy,u,P.planet,sim*P.planet.spin);
+  P.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*u,b*u,t,true,c));}
   orbit(true);ms.filter(p=>p.s>=0).forEach(moon);
 }
+const reach=(P,k)=>Math.max(1.05,...P.rings.map(r=>r[1]),...P.moons.map(m=>1.4+(m.o-1.4)*k+m.r));
 
-const c1=document.getElementById('c1'),c2=document.getElementById('c2');
-function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(playing)sim+=dt*speed;scene(c1,jamie);scene(c2,miles);requestAnimationFrame(frame);}
+function closeUp(ctx,W,H,P,st){
+  const t=W<600?.42:.3,omax=Math.max(3.3,reach(P,1));
+  const U=Math.min((W/2-14)/omax,(H/2-14)/Math.max(1.15,omax*t+.35));
+  st.targets=[{key:P.key,x:W/2,y:H/2,r:U,P}];
+  group(ctx,W/2,H/2,U,t,P,{paths:true,names:showNames,small:W<600});
+}
+
+function solar(ctx,W,H,S,st){
+  const K=.4,sunR=2,gap=1.3;let edge=sunR;
+  const lay=S.planets.map(P=>{const e=reach(P,K),orb=edge+gap+e;edge=orb+e;return{P,e,orb};});
+  if(lay.length===1)lay[0].orb=Math.max(lay[0].orb,8.5),edge=lay[0].orb+lay[0].e;
+  const t=.36,L=lay[lay.length-1];
+  const U=Math.min((W/2-12)/edge,(H/2-22)/(L.orb*t+L.e));
+  const cx=W/2,cy=H/2;
+  const pos=lay.map(l=>{const a=l.P.a0+sim*.32*Math.pow(6/l.orb,1.5),s=Math.sin(a);
+    return{...l,s,x:cx+Math.cos(a)*l.orb*U,y:cy+s*l.orb*U*t};}).sort((p,q)=>p.s-q.s);
+  st.targets=pos.map(p=>({key:p.P.key,x:p.x,y:p.y,r:U,P:p.P}));
+  st.hits=pos.map(p=>({key:p.P.key,x:p.x,y:p.y,r:Math.max(22,p.e*U)}));
+  const paths=front=>{ctx.lineWidth=1.2;ctx.strokeStyle='rgba(255,220,150,.22)';
+    lay.forEach(l=>{ctx.beginPath();ctx.ellipse(cx,cy,l.orb*U,l.orb*U*t,0,front?0:Math.PI,front?Math.PI:2*Math.PI);ctx.stroke();});};
+  const planet=p=>{group(ctx,p.x,p.y,U,t,p.P,{k:K,min:1.3});
+    if(showNames){ctx.font=`${W<600?13:16}px "Patrick Hand",sans-serif`;ctx.textAlign='center';ctx.fillStyle='rgba(245,247,255,.95)';
+      ctx.shadowColor='rgba(0,0,10,.9)';ctx.shadowBlur=5;ctx.fillText(p.P.name,p.x,p.y-Math.max(U*1.2,p.e*U*t)-8);ctx.shadowBlur=0;}};
+  paths(false);pos.filter(p=>p.s<0).forEach(planet);
+  const R=sunR*U,pulse=1+.04*Math.sin(sim*2);
+  const g=ctx.createRadialGradient(cx,cy,R*.6,cx,cy,R*2.6*pulse);
+  g.addColorStop(0,'rgba(255,200,90,.55)');g.addColorStop(1,'rgba(255,140,40,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*2.6*pulse,0,7);ctx.fill();
+  const b=ctx.createRadialGradient(cx-R*.3,cy-R*.3,R*.1,cx,cy,R);
+  b.addColorStop(0,S.sun.c[0]);b.addColorStop(.55,S.sun.c[1]);b.addColorStop(1,S.sun.c[2]);
+  ctx.fillStyle=b;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();
+  paths(true);pos.filter(p=>p.s>=0).forEach(planet);
+}
+
+
+/* ---------- fun stuff: explosions, aliens, asteroids, astronauts ---------- */
+const find=(st,k)=>st.targets.find(t=>t.key===k);
+const rand=(a,b)=>a+Math.random()*(b-a);
+function boom(st,x,y,r,P,big){
+  P.dead=clock;
+  const cols=[P.planet.base,...(P.planet.patches||[]).slice(0,6).map(p=>p.color),'#ffd34a','#ff8a2a','#fff3c4'];
+  const parts=Array.from({length:big?80:55},()=>({a:rand(0,6.283),v:rand(.5,1.5)*r*(big?3.4:2.6),s:Math.max(1.6,r*rand(.05,.16)),c:cols[Math.random()*cols.length|0],w:rand(-6,6)}));
+  const word=big?'KA-BOOM!':['BOOM!','ZAP!','POW!'][Math.random()*3|0];
+  st.fx.push({t:0,dur:2.3,draw(ctx){
+    const t=this.t,k=t/this.dur;
+    if(t<.45){const g=ctx.createRadialGradient(x,y,0,x,y,r*(1.2+t*6));g.addColorStop(0,`rgba(255,255,230,${1-t/.45})`);g.addColorStop(1,'rgba(255,150,40,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*(1.2+t*6),0,7);ctx.fill();}
+    ctx.strokeStyle=`rgba(255,210,140,${Math.max(0,1-k*1.6)})`;ctx.lineWidth=Math.max(2,r*.08);
+    ctx.beginPath();ctx.ellipse(x,y,r*(1+k*5),r*(1+k*5)*.38,0,0,7);ctx.stroke();
+    const d=1-Math.exp(-t*2.2);ctx.globalAlpha=Math.max(0,1-k*k);
+    parts.forEach(p=>{ctx.save();ctx.translate(x+Math.cos(p.a)*p.v*d,y+Math.sin(p.a)*p.v*d);ctx.rotate(p.w*t);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.7);ctx.restore();});
+    ctx.globalAlpha=Math.max(0,1-k*1.3);
+    const fs=Math.max(20,Math.min(64,r*.8))*(.6+.4*ease(t/.25));
+    ctx.font=`${fs}px "Baloo 2",sans-serif`;ctx.textAlign='center';ctx.lineWidth=fs*.14;ctx.lineJoin='round';
+    ctx.strokeStyle='#3a1206';ctx.strokeText(word,x,y-r*.9-t*20);ctx.fillStyle='#ffd23f';ctx.fillText(word,x,y-r*.9-t*20);
+  }});
+}
+
+function ufo(ctx,x,y,s,t){
+  const g=ctx.createLinearGradient(0,y-s*.3,0,y+s*.3);g.addColorStop(0,'#eef1f6');g.addColorStop(1,'#6b7280');
+  ctx.fillStyle='#7ee36b';ctx.beginPath();ctx.arc(x,y-s*.24,s*.17,0,7);ctx.fill();
+  ctx.fillStyle='#10132a';[-1,1].forEach(d=>{ctx.beginPath();ctx.ellipse(x+d*s*.07,y-s*.26,s*.045,s*.06,d*.4,0,7);ctx.fill();});
+  ctx.strokeStyle='#7ee36b';ctx.lineWidth=Math.max(1.5,s*.03);ctx.beginPath();ctx.moveTo(x,y-s*.4);ctx.lineTo(x+s*.06,y-s*.52);ctx.stroke();
+  ctx.fillStyle='#ff5ad1';ctx.beginPath();ctx.arc(x+s*.06,y-s*.53,s*.035,0,7);ctx.fill();
+  ctx.fillStyle='rgba(170,235,255,.38)';ctx.strokeStyle='rgba(220,250,255,.8)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.ellipse(x,y-s*.12,s*.42,s*.42,0,Math.PI,0);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(x,y,s,s*.28,0,0,7);ctx.fill();
+  ctx.fillStyle='#4b5160';ctx.beginPath();ctx.ellipse(x,y+s*.06,s*.98,s*.16,0,0,Math.PI);ctx.fill();
+  for(let i=0;i<7;i++){const a=Math.PI*(.1+i*.8/6);ctx.fillStyle=['#ff5ad1','#ffe14d','#5ee0ff'][(i+Math.floor(t*6))%3];
+    ctx.beginPath();ctx.arc(x+Math.cos(a)*s*.82,y+Math.sin(a)*s*.13,s*.05,0,7);ctx.fill();}
+}
+function aliens(st){
+  if(st.fx.some(f=>f.kind==='ufo'))return;
+  const keys=st.targets.map(t=>t.key).sort(()=>Math.random()-.5);
+  const enter=1.3,per=1.2,leave=enter+keys.length*per+.5,out=1.4;
+  st.fx.push({kind:'ufo',t:0,dur:leave+out,fired:{},draw(ctx,W,H){
+    const t=this.t,s=Math.max(28,Math.min(W,H)*.1),hx=W/2,hy=Math.max(s*.9,H*.15),sway=tt=>Math.sin(tt*1.6)*W*.2;
+    let x,y;
+    if(t<enter){const e=ease(t/enter);x=-s*2+(hx+sway(enter)+s*2)*e;y=hy-H*.2*(1-e);}
+    else if(t<leave){x=hx+sway(t);y=hy+Math.sin(t*2.4)*6;}
+    else{const e=ease((t-leave)/out);x=hx+sway(leave)+(W*.7+s*2)*e;y=hy-(H*.3)*e;}
+    keys.forEach((k,i)=>{const t0=enter+i*per,g=find(st,k);if(!g||g.P.dead)return;
+      if(t>t0&&t<t0+.55){const j=Math.random()*3;
+        ctx.lineCap='round';ctx.strokeStyle='rgba(120,255,140,.35)';ctx.lineWidth=s*.22+j;ctx.beginPath();ctx.moveTo(x,y+s*.2);ctx.lineTo(g.x,g.y);ctx.stroke();
+        ctx.strokeStyle='#effff0';ctx.lineWidth=s*.06;ctx.stroke();
+        ctx.fillStyle='rgba(180,255,180,.6)';ctx.beginPath();ctx.arc(g.x,g.y,g.r*.35+j*2,0,7);ctx.fill();}
+      if(t>=t0+.55&&!this.fired[k]){this.fired[k]=1;boom(st,g.x,g.y,g.r,g.P,false);}});
+    ufo(ctx,x,y,s,t);
+  }});
+}
+
+function asteroid(st){
+  if(st.fx.some(f=>f.kind==='rock'))return;
+  const live=st.targets.filter(t=>!t.P.dead);if(!live.length)return;
+  const g0=live[Math.random()*live.length|0],key=g0.key,W=st.cv.clientWidth,H=st.cv.clientHeight;
+  const sx=Math.random()<.5?-80:W+80,sy=-80,R=Math.max(14,Math.min(70,g0.r*.6)),dur=2.2;
+  const shape=Array.from({length:12},()=>rand(.72,1.05)),cr=Array.from({length:4},()=>[rand(-.5,.5),rand(-.5,.5),rand(.12,.22)]);
+  st.fx.push({kind:'rock',t:0,dur,tx:g0.x,ty:g0.y,tr:g0.r,P:g0.P,draw(ctx){
+    const g=find(st,key);if(g){this.tx=g.x;this.ty=g.y;this.tr=g.r;}
+    const e=Math.pow(this.t/dur,1.7),x=sx+(this.tx-sx)*e,y=sy+(this.ty-sy)*e,ang=Math.atan2(this.ty-sy,this.tx-sx);
+    if(Math.hypot(this.tx-x,this.ty-y)<this.tr+R*.4&&this.t>.3){this.t=dur;}
+    ctx.translate(x,y);ctx.rotate(ang);
+    const fl=ctx.createLinearGradient(-R*5,0,0,0);fl.addColorStop(0,'rgba(255,90,20,0)');fl.addColorStop(.6,'rgba(255,150,40,.7)');fl.addColorStop(1,'rgba(255,240,180,.95)');
+    ctx.fillStyle=fl;ctx.beginPath();ctx.moveTo(0,-R*.85);ctx.quadraticCurveTo(-R*3,-R*.5+Math.sin(this.t*30)*R*.1,-R*5.5,0);ctx.quadraticCurveTo(-R*3,R*.5,0,R*.85);ctx.fill();
+    ctx.rotate(this.t*3);
+    ctx.beginPath();shape.forEach((k,i)=>{const a=i/shape.length*6.283;ctx[i?'lineTo':'moveTo'](Math.cos(a)*R*k,Math.sin(a)*R*k);});ctx.closePath();
+    const rg=ctx.createRadialGradient(-R*.3,-R*.3,R*.1,0,0,R);rg.addColorStop(0,'#a8988a');rg.addColorStop(1,'#4a3f38');ctx.fillStyle=rg;ctx.fill();
+    ctx.fillStyle='rgba(40,30,25,.55)';cr.forEach(([a,b,c])=>{ctx.beginPath();ctx.arc(a*R,b*R,c*R,0,7);ctx.fill();});
+  },end(){const g=find(st,key);if(!this.P.dead)boom(st,g?g.x:this.tx,g?g.y:this.ty,g?g.r:this.tr,this.P,true);}});
+}
+
+function steel(ctx,x0,w){const g=ctx.createLinearGradient(x0,0,x0+w,0);g.addColorStop(0,'#7c828c');g.addColorStop(.35,'#f4f6f9');g.addColorStop(.6,'#b9bec6');g.addColorStop(1,'#646a73');return g;}
+function ship(ctx,x,y,h,ang,flame,t){
+  ctx.save();ctx.translate(x,y);ctx.rotate(ang);
+  const w=h*.2;
+  if(flame>0){const L=h*(.45+.12*Math.sin(t*40))*flame,g=ctx.createLinearGradient(0,0,0,L);
+    g.addColorStop(0,'#ffffff');g.addColorStop(.3,'#ffe27a');g.addColorStop(1,'rgba(255,90,20,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(-w*.42,0);ctx.quadraticCurveTo(0,L*1.3,w*.42,0);ctx.fill();}
+  ctx.fillStyle='#4f555e';
+  ctx.beginPath();ctx.moveTo(-w/2,-h*.22);ctx.lineTo(-w*1.05,-h*.02);ctx.lineTo(-w/2,-h*.02);ctx.fill();
+  ctx.beginPath();ctx.moveTo(w/2,-h*.22);ctx.lineTo(w*1.05,-h*.02);ctx.lineTo(w/2,-h*.02);ctx.fill();
+  ctx.fillStyle=steel(ctx,-w/2,w);ctx.fillRect(-w/2,-h*.78,w,h*.78);
+  ctx.beginPath();ctx.moveTo(-w/2,-h*.78);ctx.quadraticCurveTo(-w/2,-h*.97,0,-h);ctx.quadraticCurveTo(w/2,-h*.97,w/2,-h*.78);ctx.fill();
+  ctx.fillStyle='#4f555e';
+  ctx.beginPath();ctx.moveTo(-w/2,-h*.86);ctx.lineTo(-w*.85,-h*.74);ctx.lineTo(-w/2,-h*.7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(w/2,-h*.86);ctx.lineTo(w*.85,-h*.74);ctx.lineTo(w/2,-h*.7);ctx.fill();
+  for(let i=0;i<3;i++){ctx.fillStyle='#1d2b55';ctx.beginPath();ctx.arc(0,-h*(.66-i*.09),w*.17,0,7);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.arc(-w*.05,-h*(.66-i*.09)-w*.05,w*.05,0,7);ctx.fill();}
+  ctx.restore();
+}
+function astronaut(ctx,x,y,s,rot,wave){
+  ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.lineCap='round';
+  ctx.strokeStyle='#f4f6fa';ctx.lineWidth=s*.16;
+  ctx.beginPath();ctx.moveTo(-s*.1,0);ctx.lineTo(-s*.08,-s*.3);ctx.moveTo(s*.1,0);ctx.lineTo(s*.08,-s*.3);ctx.stroke();
+  ctx.fillStyle='#dfe4ec';ctx.fillRect(-s*.24,-s*.62,s*.12,s*.3);
+  ctx.fillStyle='#f4f6fa';ctx.beginPath();ctx.ellipse(0,-s*.45,s*.17,s*.2,0,0,7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(-s*.14,-s*.52);ctx.lineTo(-s*.26,-s*.32);ctx.stroke();
+  ctx.save();ctx.translate(s*.14,-s*.54);ctx.rotate(-1.2+Math.sin(wave)*.6);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(s*.24,0);ctx.stroke();ctx.restore();
+  ctx.fillStyle='#f4f6fa';ctx.beginPath();ctx.arc(0,-s*.8,s*.17,0,7);ctx.fill();
+  ctx.fillStyle='#e0a83a';ctx.beginPath();ctx.ellipse(s*.03,-s*.8,s*.11,s*.08,0,0,7);ctx.fill();
+  ctx.restore();
+}
+function rocket(st){
+  if(st.fx.some(f=>f.kind==='ship'))return;
+  const live=st.targets.filter(t=>!t.P.dead);if(!live.length)return;
+  const g0=live[Math.random()*live.length|0],key=g0.key,fly=2.6,stay=7,lift=2;
+  st.fx.push({kind:'ship',t:0,dur:fly+stay+lift,G:g0,draw(ctx,W,H){
+    const g=find(st,key);if(g)this.G=g;const G=this.G;
+    if(G.P.dead&&this.t<fly+stay)this.t=fly+stay;
+    const t=this.t,h=Math.max(30,Math.min(110,G.r*.95)),lx=G.x,ly=G.y-G.r*.97;
+    let x=lx,y=ly,ang=0,flame=0;
+    if(t<fly){const e=ease(t/fly);x=lx-W*.55*(1-e);y=-h*1.3+(ly+h*1.3)*Math.sqrt(e);ang=(1-e)*.9;flame=1;}
+    else if(t>=fly+stay){const e=(t-fly-stay)/lift;y=ly-e*e*(H+h*2);flame=1;}
+    const crew=t<fly+.5?0:ease(Math.min((t-fly-.5)/.8,(fly+stay-.3-t)/.6));
+    if(crew>0){const s=h*.34;[-1,1].forEach((d,i)=>{const th=d*(h*.42*(.4+.6*crew))/G.r;
+      astronaut(ctx,G.x+Math.sin(th)*G.r*.98,G.y-Math.cos(th)*G.r*.98,s*crew,th,t*6+i*2);});
+      ctx.globalAlpha=crew;const fs=Math.max(13,Math.min(22,h*.24));ctx.font=`${fs}px "Patrick Hand",sans-serif`;ctx.textAlign='center';
+      const msg='Hi '+st.kid+'!',bw=ctx.measureText(msg).width+16,bx=lx,by=Math.max(fs+6,ly-h-fs*1.2);
+      ctx.fillStyle='#ffffff';ctx.beginPath();ctx.roundRect(bx-bw/2,by-fs,bw,fs*1.5,8);ctx.fill();
+      ctx.beginPath();ctx.moveTo(bx-5,by+fs*.5);ctx.lineTo(bx,by+fs*.5+7);ctx.lineTo(bx+5,by+fs*.5);ctx.fill();
+      ctx.fillStyle='#10132a';ctx.fillText(msg,bx,by+fs*.12);ctx.globalAlpha=1;}
+    ship(ctx,x,y,h,ang,flame,t);
+  }});
+}
+
+const stages=[['c1','t1','p1',jamie,'a1','Jamie'],['c2','t2','p2',miles,'a2','Miles']].map(([c,t,p,S,a,kid])=>({kid,fx:[],targets:[],acts:document.getElementById(a),cv:document.getElementById(c),tabs:document.getElementById(t),cap:document.getElementById(p),S,view:S.start,fade:1,hits:[]}));
+function setView(st,v){st.view=v;st.fade=0;
+  st.tabs.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===v)));
+  st.cap.textContent=v==='sys'?st.S.syscap:st.S.planets.find(P=>P.key===v).cap;}
+stages.forEach(st=>{
+  st.tabs.innerHTML=`<button data-v="sys">Solar system</button>`+st.S.planets.map(P=>`<button data-v="${P.key}">${P.name}</button>`).join('');
+  st.tabs.onclick=e=>{const b=e.target.closest('button');if(b)setView(st,b.dataset.v);};
+  st.cv.onclick=e=>{if(st.view!=='sys')return;const r=st.cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    let best=null,bd=1e9;st.hits.forEach(h=>{const d=Math.hypot(h.x-x,h.y-y);if(d<h.r&&d<bd){bd=d;best=h;}});if(best)setView(st,best.key);};
+  setView(st,st.view);st.fade=1;
+  st.acts.innerHTML='<button data-a="ufo">Alien attack</button><button data-a="rock">Asteroid</button><button data-a="ship">Astronauts</button>';
+  st.acts.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(!playing)setPlay(true);({ufo:aliens,rock:asteroid,ship:rocket})[b.dataset.a](st);};});
+
+function draw(st,dt){
+  const cv=st.cv,ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);bg(ctx,W,H);
+  st.fade=Math.min(1,st.fade+dt*2.5);ctx.globalAlpha=st.fade;
+  if(st.view==='sys')solar(ctx,W,H,st.S,st);else closeUp(ctx,W,H,st.S.planets.find(P=>P.key===st.view),st);
+  ctx.globalAlpha=1;
+  st.fx.slice().forEach(f=>{f.t+=dt;ctx.save();f.draw(ctx,W,H);ctx.restore();if(f.t>=f.dur){st.fx.splice(st.fx.indexOf(f),1);if(f.end)f.end();}});
+}
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;if(playing)sim+=dt*speed;stages.forEach(st=>draw(st,dt));requestAnimationFrame(frame);}
 
 const play=document.getElementById('play');
 const setPlay=v=>{playing=v;play.textContent=v?'Pause':'Play';play.setAttribute('aria-pressed',String(!v));};
