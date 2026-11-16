@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planets and Their Moons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+/* VOICE: playful, proud, a kid's poster come to life
+   IDEA: Miles's rainbow-crayon "Planets and their moons" header, pinned up in deep space
+   PICTURE: each drawn planet spinning, rings and moons orbiting in front of and behind it
+   COLOUR and TYPE: night-sky navy, crayon rainbow band, white handwriting (Patrick Hand) + Baloo 2
+   LAYOUT: crayon header + controls, then one big orbit stage per planet with its facts underneath */
+:root{color-scheme:dark;--bg:#0b0f24;--ink:#eef0ff;--dim:#a9aed6;--card:#141a3a;--line:#262e5e}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:radial-gradient(1200px 700px at 70% -10%,#1d2557 0%,var(--bg) 60%) fixed,var(--bg);color:var(--ink);font:17px/1.5 "Patrick Hand",system-ui,sans-serif;overflow-x:clip}
+header{background:repeating-linear-gradient(92deg,#f4a6b8 0 14px,#f7c873 14px 26px,#9fdc9a 26px 40px,#86c5ee 40px 52px,#c2a2ea 52px 66px,#f19a7c 66px 78px);padding:28px max(5vw,16px) 22px;position:relative}
+header::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.55);pointer-events:none}
+header>*{position:relative;z-index:1}
+h1{font:400 clamp(38px,7vw,64px)/1.05 "Patrick Hand",cursive;color:#1b1b2e;margin:0;text-wrap:balance}
+header p{margin:6px 0 0;color:#2b2b44;font-size:19px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px max(5vw,16px);border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,15,36,.92);backdrop-filter:blur(6px);z-index:5}
+button{font:inherit;font-size:17px;color:var(--ink);background:var(--card);border:1px solid #3a4486;border-radius:22px;min-height:44px;padding:0 18px;cursor:pointer}
+button[aria-pressed=true]{background:#e9ecff;color:#141a3a;border-color:#e9ecff}
+button:focus-visible{outline:3px solid #f7c873;outline-offset:2px}
+.seg{display:flex;gap:4px}
+.band{padding:clamp(24px,4vw,56px) max(5vw,16px);max-width:1240px;margin:0 auto}
+h2{font:800 clamp(32px,5vw,48px)/1.05 "Baloo 2",sans-serif;margin:0}
+.by{color:var(--dim);font-size:20px;margin:2px 0 14px}
+.fig{position:relative;height:clamp(300px,58vw,540px);border-radius:18px;overflow:hidden;background:#05071a;border:1px solid var(--line)}
+.fig>canvas{position:absolute;inset:0;width:100%;height:100%}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:16px}
+.f{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.f b{display:block;font:600 15px "Baloo 2",sans-serif;color:var(--dim)}
+.f span{font-size:21px;line-height:1.3}
+.moons{list-style:none;padding:0;margin:16px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:8px 16px}
+.moons li{display:flex;gap:10px;align-items:center}
+.dot{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #1b1b2e}
+.note{color:var(--dim);font-size:15px;margin-top:14px}
+footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <h1>Planets and their moons</h1>
+  <p>Drawn by Jamie and Miles, set spinning by Claude</p>
+</header>
+<div class="bar">
+  <button id="play" aria-pressed="false">Pause</button>
+  <div class="seg" role="group" aria-label="Speed">
+    <button data-s="0.4" aria-pressed="false">Slow</button>
+    <button data-s="1" aria-pressed="true">Normal</button>
+    <button data-s="2.6" aria-pressed="false">Zoom!</button>
+  </div>
+  <button id="names" aria-pressed="true">Moon names</button>
+</div>
+
+<section class="band">
+  <h2>55 Flizza 3.0</h2>
+  <p class="by">by Jamie · the freezing planet of the 55 Flizza family</p>
+  <div class="fig"><canvas id="c1" aria-label="Animation of 55 Flizza 3.0, a dark blue planet with three gray and black rings and three moons orbiting"></canvas></div>
+  <div class="facts">
+    <div class="f"><b>Size</b><span>1½ times as big as Neptune</span></div>
+    <div class="f"><b>Weather zones</b><span>From −25°F to 25°F. Brrr!</span></div>
+    <div class="f"><b>Core temperature</b><span>2,900°F to 3,150°F</span></div>
+    <div class="f"><b>Wind</b><span>Up to 595 mph (fastest ever: 745 mph)</span></div>
+    <div class="f"><b>Air</b><span>48% carbon, 3% nitrogen, 49% other</span></div>
+    <div class="f"><b>Rings and moons</b><span>3 dark rings, 3 moons numbered by how close they are</span></div>
+    <div class="f"><b>Moon fact</b><span>Wind on 55 Flizza 3.2 got up to 1,050 mph</span></div>
+  </div>
+</section>
+
+<section class="band">
+  <h2>95 Cinna 1.0</h2>
+  <p class="by">by Miles · the patchwork planet with nine moons</p>
+  <div class="fig"><canvas id="c2" aria-label="Animation of 95 Cinna 1.0, a colourful patchwork planet with a rainbow ring and nine moons orbiting"></canvas></div>
+  <div class="facts">
+    <div class="f"><b>Planet colours</b><span>Blue with brown, pink, red, orange, light green and teal patches</span></div>
+    <div class="f"><b>Ring</b><span>Every colour except gold and silver</span></div>
+    <div class="f"><b>Moons</b><span>9, from 95 Cinna 1.1 up to 1.9</span></div>
+  </div>
+  <ul class="moons" id="mlist"></ul>
+  <p class="note">The crinkles and the scribbled-out moon are cleaned up. Nothing else was left out.</p>
+</section>
+<footer>Tap a speed to make the moons go faster or slower.</footer>
+
+<script>
+{
+const D=Math.PI/180;
+let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const blob=(lon,lat,size,color)=>{const n=10,pts=[];for(let i=0;i<n;i++){const a=i/n*2*Math.PI,k=size*(0.72+rnd()*0.56);pts.push([Math.cos(a)*k/Math.max(.4,Math.cos(lat*D)),Math.sin(a)*k]);}return{lon,lat,color,pts};};
+const scatter=(n,colors,smin,smax,latMax)=>Array.from({length:n},(_,i)=>blob(i*360/n+rnd()*20,(rnd()*2-1)*latMax,smin+rnd()*(smax-smin),colors[i%colors.length]));
+const stripes=(c0,wave=0,offset=0)=>{const colors=[...c0,...c0];const w=360/colors.length;return colors.map((c,i)=>[offset+i*w,offset+(i+1)*w,c,wave]);};
+
+/* Jamie: 55 Flizza 3.0 */
+const cracks=Array.from({length:8},(_,i)=>{let lon=i*45+rnd()*20,lat=-65;const p=[];while(lat<65){p.push([lon,lat]);lat+=8+rnd()*8;lon+=(rnd()-.5)*28;}return p;});
+const jamie={
+  planet:{base:'#3a54a8',outline:'#131838',spin:10,
+    bands:[[38,90,'#3d3290'],[62,90,'#2d2475'],[-90,-58,'#2f4592']],
+    patches:scatter(9,['#4f69c0','#334a9c','#4a3fa3'],14,26,55),lines:cracks,lineColor:'#1a2050'},
+  rings:[[1.22,1.34,'#62636b'],[1.38,1.52,'#26262b'],[1.56,1.7,'#7a7b82']],
+  moons:[
+    {name:'55 Flizza 3.1',r:.13,o:1.95,a:.4,body:{base:'#8d8e96',spin:30,patches:scatter(4,['#6f7078'],12,22,50)}},
+    {name:'55 Flizza 3.2',r:.18,o:2.65,a:2.6,body:{base:'#7c7d85',spin:24,patches:scatter(5,['#5f6068','#9a9ba2'],12,22,50)}},
+    {name:'55 Flizza 3.3',r:.46,o:3.6,a:4.4,body:{base:'#3c3d44',spin:14,patches:scatter(7,['#2a2a30','#55565e','#33343a'],12,24,60)}}
+  ]};
+
+/* Miles: 95 Cinna 1.0 */
+const mp=['#f0a24a','#e8786f','#9b7b6b','#f3a0c4','#8fd6a0','#45b5a8','#bfe39a'];
+const miles={
+  planet:{base:'#9d9bd8',outline:'#1d1a33',spin:12,patches:scatter(15,mp,13,22,58),stroke:true},
+  rings:['#e98aa8','#7fc4e8','#f0a24a','#9b7b6b','#8fd6a0','#e8786f','#b49be0','#45b5a8','#7d7d86','#f3a0c4'].map((c,i)=>[1.2+i*.055,1.2+i*.055+.045,c]),
+  moons:[
+    ['1.1','#f3a0c4',{patches:['#f0a24a','#e8786f','#8fd6a0']},'orange, red, green and pink'],
+    ['1.2','#b49be0',{stripes:['#e8786f','#8fd6a0','#5b8de0','#f6d55c','#b07ad6','#f0a24a']},'rainbow stripes'],
+    ['1.3','#e8889a',{patches:['#9fdc6a','#b07ad6']},'pink with a green star'],
+    ['1.4','#f3a0c4',{patches:['#8fd6a0','#f0a24a','#e8786f']},'pink, green and orange'],
+    ['1.5','#f6d55c',{stripes:['#5b8de0','#8fd6a0','#f0a24a','#e8786f','#b07ad6','#f6d55c'],wave:1},'wavy rainbow'],
+    ['1.6','#24234a',{stripes:['#e8786f','#24234a','#5b8de0','#24234a','#8fd6a0','#24234a','#f6d55c','#24234a']},'dark with bright stripes'],
+    ['1.7','#e8788a',{patches:['#8fd6a0','#c4e88a']},'red-pink with green'],
+    ['1.8','#6aa7e8',{patches:['#8fd6a0','#f0a24a','#f3a0c4','#f6d55c']},'blue, green, orange and pink'],
+    ['1.9','#8c88d6',{stripes:['#f3a0c4','#8c88d6','#f3a0c4','#8c88d6','#f3a0c4','#8c88d6'],wave:2},'pink swirls on the planet’s own blue']
+  ].map(([n,base,s,desc],i)=>({name:'95 Cinna '+n,desc,base,r:i==8?.3:.15+(i%3)*.025,o:1.85+i*.27,a:i*2.4,
+    body:{base,spin:20+i*3,outline:'#1d1a33',patches:s.patches?scatter(6,s.patches,14,24,55):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))
+};
+
+document.getElementById('mlist').innerHTML=miles.moons.map(m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`).join('');
+
+const proj=(lon,lat,rot)=>{const L=(lon+rot)*D,B=lat*D;let x=Math.cos(B)*Math.sin(L),y=-Math.sin(B);const z=Math.cos(B)*Math.cos(L);if(z<0){const k=Math.hypot(x,y)||1;x/=k;y/=k;}return[x,y,z];};
+function shape(ctx,pts){const n=pts.length;ctx.beginPath();ctx.moveTo((pts[n-1][0]+pts[0][0])/2,(pts[n-1][1]+pts[0][1])/2);for(let i=0;i<n;i++){const p=pts[i],q=pts[(i+1)%n];ctx.quadraticCurveTo(p[0],p[1],(p[0]+q[0])/2,(p[1]+q[1])/2);}ctx.closePath();}
+
+function body(ctx,x,y,r,b,rot){
+  ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.clip();
+  ctx.fillStyle=b.base;ctx.fillRect(-r,-r,2*r,2*r);
+  (b.bands||[]).forEach(([a,c,col])=>{ctx.fillStyle=col;const y0=-Math.sin(c*D)*r,y1=-Math.sin(a*D)*r;ctx.fillRect(-r,y0,2*r,y1-y0);});
+  (b.stripes||[]).forEach(([l0,l1,col,w])=>{
+    const m=proj((l0+l1)/2,0,rot);if(m[2]<-.35)return;const pts=[];
+    for(let la=-90;la<=90;la+=10)pts.push(proj(l0+w*14*Math.sin(la*D*3),la,rot));
+    for(let la=90;la>=-90;la-=10)pts.push(proj(l1+w*14*Math.sin(la*D*3),la,rot));
+    ctx.beginPath();pts.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](p[0]*r,p[1]*r));ctx.closePath();ctx.fillStyle=col;ctx.fill();});
+  (b.patches||[]).forEach(p=>{
+    if(proj(p.lon,p.lat,rot)[2]<-.3)return;
+    shape(ctx,p.pts.map(([dl,db])=>{const q=proj(p.lon+dl,Math.max(-89,Math.min(89,p.lat+db)),rot);return[q[0]*r,q[1]*r];}));
+    ctx.fillStyle=p.color;ctx.fill();if(b.stroke){ctx.lineWidth=Math.max(1,r*.025);ctx.strokeStyle='rgba(25,20,45,.75)';ctx.stroke();}});
+  if(b.lines){ctx.strokeStyle=b.lineColor;ctx.lineWidth=Math.max(1,r*.02);b.lines.forEach(l=>{for(let i=1;i<l.length;i++){const p=proj(...l[i-1],rot),q=proj(...l[i],rot);if(p[2]>0&&q[2]>0){ctx.beginPath();ctx.moveTo(p[0]*r,p[1]*r);ctx.lineTo(q[0]*r,q[1]*r);ctx.stroke();}}});}
+  const g=ctx.createRadialGradient(-r*.45,-r*.45,r*.1,-r*.2,-r*.2,r*1.55);
+  g.addColorStop(0,'rgba(255,255,255,.22)');g.addColorStop(.45,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(2,3,20,.72)');
+  ctx.fillStyle=g;ctx.fillRect(-r,-r,2*r,2*r);ctx.restore();
+  if(b.outline){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.lineWidth=Math.max(1,r*.03);ctx.strokeStyle=b.outline;ctx.stroke();}
+}
+
+function ringHalf(ctx,cx,cy,ri,ro,t,front,col){
+  ctx.beginPath();
+  if(front){ctx.ellipse(cx,cy,ro,ro*t,0,0,Math.PI);ctx.ellipse(cx,cy,ri,ri*t,0,Math.PI,0,true);}
+  else{ctx.ellipse(cx,cy,ro,ro*t,0,Math.PI,2*Math.PI);ctx.ellipse(cx,cy,ri,ri*t,0,2*Math.PI,Math.PI,true);}
+  ctx.closePath();ctx.fillStyle=col;ctx.fill();
+}
+
+const stars=Array.from({length:160},()=>[rnd(),rnd(),rnd()*1.3+.3,rnd()*6]);
+let showNames=true,speed=1,playing=true,sim=0,last=performance.now();
+
+function scene(cv,sys){
+  const ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  stars.forEach(([x,y,s,p])=>{ctx.fillStyle=`rgba(255,255,255,${.35+.35*Math.sin(sim*1.5+p)})`;ctx.fillRect(x*W,y*H,s,s);});
+  const t=W<600?.42:.3,omax=Math.max(...sys.moons.map(m=>m.o+m.r)),cx=W/2,cy=H/2;
+  const U=Math.min((W/2-14)/omax,(H/2-14)/Math.max(1.15,omax*t+.35));
+  const ms=sys.moons.map(m=>{const a=m.a+sim*.9/Math.pow(m.o,1.5),s=Math.sin(a);return{m,a,s,x:cx+Math.cos(a)*m.o*U,y:cy+s*m.o*U*t,r:m.r*U*(1+.12*s)};}).sort((p,q)=>p.s-q.s);
+  const orbit=(front)=>{ctx.setLineDash([3,6]);ctx.lineWidth=1;ctx.strokeStyle='rgba(200,210,255,.18)';sys.moons.forEach(m=>{ctx.beginPath();ctx.ellipse(cx,cy,m.o*U,m.o*U*t,0,front?0:Math.PI,front?Math.PI:2*Math.PI);ctx.stroke();});ctx.setLineDash([]);};
+  const moon=p=>{body(ctx,p.x,p.y,p.r,p.m.body,sim*p.m.body.spin);
+    if(showNames){ctx.font=`${W<600?12:14}px "Patrick Hand",sans-serif`;ctx.fillStyle=p.s<0?'rgba(230,234,255,.5)':'rgba(240,243,255,.95)';ctx.textAlign=p.x>cx?'left':'right';ctx.fillText(p.m.name,p.x+(p.x>cx?1:-1)*(p.r+4),p.y-p.r*.4);}};
+  orbit(false);ms.filter(p=>p.s<0).forEach(moon);
+  sys.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*U,b*U,t,false,c));
+  body(ctx,cx,cy,U,sys.planet,sim*sys.planet.spin);
+  sys.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*U,b*U,t,true,c));
+  orbit(true);ms.filter(p=>p.s>=0).forEach(moon);
+}
+
+const c1=document.getElementById('c1'),c2=document.getElementById('c2');
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(playing)sim+=dt*speed;scene(c1,jamie);scene(c2,miles);requestAnimationFrame(frame);}
+
+const play=document.getElementById('play');
+const setPlay=v=>{playing=v;play.textContent=v?'Pause':'Play';play.setAttribute('aria-pressed',String(!v));};
+play.onclick=()=>setPlay(!playing);
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{speed=+b.dataset.s;document.querySelectorAll('[data-s]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(!playing)setPlay(true);});
+const nb=document.getElementById('names');nb.onclick=()=>{showNames=!showNames;nb.setAttribute('aria-pressed',String(showNames));};
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)setPlay(false);
+requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>
