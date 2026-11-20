@@ -38,7 +38,8 @@ h2{font:800 clamp(32px,5vw,48px)/1.05 "Baloo 2",sans-serif;margin:0}
 .acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
 .acts button{font:700 17px "Baloo 2",sans-serif;border:none;color:#10132a;padding:0 6px;min-height:48px;border-radius:14px;white-space:nowrap}
 .acts [data-a=ray]{grid-column:span 2}
-@media(min-width:700px){.acts{grid-template-columns:repeat(5,minmax(0,1fr))}.acts [data-a=ray]{grid-column:auto}}
+.acts [data-a=nova]{grid-column:span 3;background:radial-gradient(circle at 50% 120%,#ffffff,#ffe27a 30%,#ff7ac0 65%,#7a6bff);box-shadow:0 0 14px rgba(255,170,220,.5)}
+@media(min-width:700px){.acts{grid-template-columns:repeat(6,minmax(0,1fr))}.acts [data-a=ray],.acts [data-a=nova]{grid-column:auto}}
 .acts [data-a=ufo]{background:#7ee36b}.acts [data-a=rock]{background:#ff9d4d}.acts [data-a=ship]{background:#cfd8e6}.acts [data-a=bh]{background:#b99cff}.acts [data-a=ray]{background:#ff5d6c}
 .acts [data-a=ray][aria-pressed=true]{background:#fff;box-shadow:0 0 0 3px #ff5d6c,0 0 16px #ff5d6c}
 .fig.armed canvas{cursor:crosshair}
@@ -79,11 +80,21 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
 
 <section class="band">
   <h2>The 55 Flizza family</h2>
-  <p class="by">by Jamie · a sun and three planets: hot, just right, and freezing</p>
+  <p class="by">by Jamie · a blue giant sun and four planets: hot, just right, freezing, and the aurora planet</p>
   <div class="tabs" id="t1" role="group" aria-label="Choose a view"></div>
   <div class="fig"><canvas id="c1" aria-label="Animation of Jamie's 55 Flizza planets and moons"></canvas></div>
   <div class="acts" id="a1"></div>
   <p class="cap" id="p1"></p>
+  <h3>55 Flizza 4.0, the aurora planet</h3>
+  <div class="facts">
+    <div class="f"><b>Looks like</b><span>Glowing northern lights: purple, green and blue swirls, with black streaks of darkness</span></div>
+    <div class="f"><b>Weather zones</b><span>From −30°F to 15°F. The silver lines are the borders between zones</span></div>
+    <div class="f"><b>Age</b><span>2.95 billion years, younger than Earth</span></div>
+    <div class="f"><b>Core temperature</b><span>1,000°F to 1,250°F</span></div>
+    <div class="f"><b>Moons</b><span>9 moons, plus 4 baby moons that go around 55 Flizza 4.1</span></div>
+    <div class="f"><b>Moon fact</b><span>4.1.3 is the tiniest moon, but it's powerful and bouncy</span></div>
+  </div>
+  <ul class="moons" id="mlist4"></ul>
   <h3>55 Flizza 3.0, from Jamie's drawing</h3>
   <div class="facts">
     <div class="f"><b>Size</b><span>1½ times as big as Neptune</span></div>
@@ -97,9 +108,10 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
   <h3>Its sisters, from what Jamie told Claude</h3>
   <div class="facts">
     <div class="f"><b>55 Flizza 1.0</b><span>Closest to the sun and really hot, with nine toasty moons</span></div>
-    <div class="f"><b>55 Flizza 2.0</b><span>A little cooler than Earth, a planet you could live on</span></div>
+    <div class="f"><b>55 Flizza 2.0</b><span>A little cooler than Earth, a planet you could live on. Shimmering red, yellow and green stripes, white, purple and blue poles, and 7 gray moons (2.6 is the biggest, 2.3 the tiniest)</span></div>
+    <div class="f"><b>The sun</b><span>A blue giant, about 10 times bigger than our sun</span></div>
   </div>
-  <p class="note">Jamie hasn't drawn 1.0 and 2.0 yet, so their colours and 2.0's two moons are Claude's guesses.</p>
+  <p class="note">Jamie hasn't drawn 1.0 yet, so its colours are Claude's guess. 2.0 is built from Jamie's description.</p>
 </section>
 
 <section class="band">
@@ -113,7 +125,7 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
   <div class="facts">
     <div class="f"><b>Planet colours</b><span>Wavy stripes of purple, brown, green, blue, yellow, orange, pink and red</span></div>
     <div class="f"><b>Moons</b><span>7, from 95 Cinna 2.1 up to 2.7</span></div>
-    <div class="f"><b>Wobbly orbits</b><span>Its moons swing on stretched, tilted loops that slowly wobble and turn</span></div>
+    <div class="f"><b>Round orbits</b><span>All seven moons go around in perfect circles</span></div>
   </div>
   <ul class="moons" id="mlist2"></ul>
   <h3>95 Cinna 1.0</h3>
@@ -125,7 +137,7 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
   <ul class="moons" id="mlist"></ul>
   <p class="note">On 1.0, the crinkles and the scribbled-out moon are cleaned up. Nothing else was left out.</p>
 </section>
-<footer>Tap "Solar system" to zoom out, then tap a planet to zoom back in. Blown-up planets rebuild themselves, and a comet flies past every so often. Turn on the death ray, then tap a planet or moon to zap it.</footer>
+<footer>Tap "Solar system" to zoom out, then tap a planet to zoom back in. Blown-up planets rebuild themselves, and a comet flies past every so often. Turn on the death ray, then tap a planet or moon to zap it. Or hit Supernova to blow up everything at once!</footer>
 <div id="game" hidden><canvas id="gc"></canvas><button id="gx">Exit</button>
   <div class="gcard" id="gcard"><h2 id="gh">Secret unlocked!</h2><p id="gp"></p><button id="gstart">Start</button><button id="gback">Back to planets</button></div></div>
 
@@ -159,18 +171,39 @@ const J1={key:'1.0',name:'55 Flizza 1.0',a0:1.1,
   rings:[],
   moons:hot.map((c,i)=>({name:'55 Flizza 1.'+(i+1),r:.12+(i%3)*.04,o:1.7+i*.24,a:i*2.1,
     body:{base:c,spin:22+i*2,patches:scatter(4,['#7a1a0a','#ffe08a'],12,22,55)}}))};
-/* Jamie: 55 Flizza 2.0, a little cooler than Earth, livable (Claude's guess at the look) */
+/* Jamie: 55 Flizza 2.0, as Jamie described it: shimmering red, yellow and green stripes, white/purple/blue poles, seven gray moons */
+const ryg=['#d8402f','#f4cf3a','#5cbf4a'];
 const J2={key:'2.0',name:'55 Flizza 2.0',a0:2.9,
-  cap:'55 Flizza 2.0 · a little cooler than Earth, a planet you could live on (Claude\'s guess)',
-  planet:{base:'#2f7fd0',outline:'#0d2a4a',spin:12,bands:[[72,90,'#eef4ff'],[-90,-70,'#eef4ff']],
-    patches:[...scatter(8,['#5fae5a','#3f8a4a','#c9b27a','#76c06a'],14,26,50),...scatter(7,['rgba(255,255,255,.75)'],6,12,60)]},
+  cap:'55 Flizza 2.0 · Jamie\'s design: shimmering red, yellow and green stripes and seven gray moons',
+  planet:{base:'#d8402f',outline:'#3a120c',spin:12,shimmer:true,
+    bands:[...Array.from({length:11},(_,i)=>[-66+i*12,-54+i*12,ryg[i%3]]),[66,90,'#f4f6ff'],[-90,-66,'#f4f6ff']],
+    patches:[...[0,72,144,216,288].map((l,i)=>blob(l,79,9,i%2?'#7a5cd6':'#4f86e0')),...[36,108,180,252,324].map((l,i)=>blob(l,-79,9,i%2?'#4f86e0':'#7a5cd6'))]},
   rings:[],
-  moons:[
-    {name:'55 Flizza 2.1',r:.15,o:1.9,a:1,body:{base:'#a6a7ad',spin:26,patches:scatter(4,['#85868c'],12,20,50)}},
-    {name:'55 Flizza 2.2',r:.22,o:2.6,a:3.6,body:{base:'#d9cdb0',spin:20,patches:scatter(5,['#b8ab8c'],12,22,50)}}
-  ]};
-const jamie={sun:{c:['#fffbe0','#ffd04a','#ff8a1f']},planets:[J1,J2,J3],start:'3.0',
-  syscap:'The whole 55 Flizza family orbiting its sun. Tap a planet to zoom in.'};
+  moons:[['2.1',.15,'#a6a7ad','gray'],['2.2',.13,'#cfd0d6','light gray, a lot like 2.3 and 2.7'],['2.3',.08,'#d6d7dc','light gray, the tiniest moon'],
+    ['2.4',.25,'#9a9ba2','gray and pretty big'],['2.5',.22,'#a3a4ab','gray, a teeny bit smaller than 2.4'],['2.6',.32,'#8f9098','gray, the biggest moon'],['2.7',.14,'#cbccd2','light gray']]
+    .map(([n,r,base,desc],i)=>({name:'55 Flizza '+n,desc,base,r,o:1.8+i*.36,a:i*2.3,body:{base,spin:20+i*3,patches:scatter(4,['rgba(0,0,0,.16)','rgba(255,255,255,.22)'],12,22,50)}}))};
+/* Jamie: 55 Flizza 4.0, the aurora planet (from the drawing and what Jamie said) */
+const au={pu:'#7a45d0',gr:'#62d65a',lb:'#a9dcf3',db:'#2c53c9'};
+const zones=Array.from({length:7},(_,i)=>{let lon=i*51+rnd()*15,lat=-70;const p=[];while(lat<70){p.push([lon,lat]);lat+=10+rnd()*10;lon+=(rnd()-.5)*40;}return p;});
+const streak=(lon,lat,size,color)=>{const b=blob(lon,lat,size,color);b.pts=b.pts.map(([x,y])=>[x*2.6,y*.45+x*.55]);return b;};
+const sub=(n,r,o,base,desc,x={})=>({name:'55 Flizza '+n,r,o,base,desc,a:rnd()*6,sp:.9+rnd()*.5,e:.08,f:.5+rnd()*.4,ph:rnd()*6,body:{base,spin:30,outline:'#141a40'},...x});
+const J4={key:'4.0',name:'55 Flizza 4.0',a0:5.4,
+  cap:'55 Flizza 4.0 · Jamie\'s aurora planet: glowing northern-lights swirls, 9 moons and 4 baby moons',
+  planet:{base:au.lb,outline:'#141a40',spin:9,
+    patches:Array.from({length:26},(_,i)=>streak(i*13.8+rnd()*12,(rnd()*2-1)*62,12+rnd()*10,[au.pu,au.gr,au.db,au.pu,au.gr,'#5a3cb8'][i%6])),
+    aurora:[au.gr,au.pu,'#5fe3ff',au.gr,'#b07aff'],
+    over:Array.from({length:5},(_,i)=>streak(i*72+rnd()*30,(rnd()*2-1)*45,5+rnd()*4,'rgba(8,8,18,.85)')),
+    lines:zones,lineColor:'rgba(225,230,245,.5)'},
+  rings:[],
+  moons:[['4.1',.2,'#4a4fb0','dark blue, with 4 baby moons going around it'],['4.2',.08,'#bfe3f5','tiny and light blue'],['4.3',.22,au.pu,'purple'],
+    ['4.4',.19,au.db,'dark blue'],['4.5',.18,'#2a4cc0','dark blue'],['4.6',.24,'#2f58cf','dark blue and big'],['4.7',.2,au.gr,'green'],
+    ['4.8',.28,au.pu,'big and purple'],['4.9',.27,'#15151f','black']]
+    .map(([n,r,base,desc],i)=>({name:'55 Flizza '+n,desc,base,r,o:i?2.9+(i-1)*.23:2,a:i*2.2+.5,
+      body:{base,spin:20+i*3,outline:base==='#15151f'?'#5a5f80':'#141a40',patches:scatter(4,['rgba(0,0,0,.18)','rgba(255,255,255,.18)'],12,22,50)}}))};
+J4.moons[0].subs=[sub('4.1.0',.06,1.8,au.db,'small and dark blue'),sub('4.1.1',.06,2.3,'#8a55d8','purple, on a wobbly oval that swings a bit closer, then a bit farther',{e:.25}),
+  sub('4.1.2',.08,2.8,'#6a3cc0','purple'),sub('4.1.3',.04,3.3,'#3a3550','the tiniest moon, but powerful and bouncy',{bouncy:true})];
+const jamie={sun:{c:['#f4f9ff','#7fb8ff','#2a5ee8'],glow:['rgba(110,170,255,.6)','rgba(60,110,255,0)'],r:3,gap:1.7},planets:[J1,J2,J3,J4],start:'4.0',
+  syscap:'The whole 55 Flizza family orbiting its blue giant sun. Tap a planet to zoom in.'};
 
 /* Miles: 95 Cinna 1.0 */
 const mp=['#f0a24a','#e8786f','#9b7b6b','#f3a0c4','#8fd6a0','#45b5a8','#bfe39a'];
@@ -195,7 +228,7 @@ const M1={key:'1.0',name:'95 Cinna 1.0',a0:.6,
 const mc={pu:'#8a5cc7',br:'#8b6a50',gr:'#7ccf4a',bl:'#4f6fd0',ye:'#f4dc4a',or:'#f4a24a',pk:'#e98ab0',rd:'#d84a3a',lb:'#a9dcf0',mr:'#8e2f3f'};
 const wobble=()=>({e:.1+rnd()*.18,i0:(rnd()-.5)*.4,ia:.12+rnd()*.18,f:.3+rnd()*.4,ph:rnd()*6,w0:rnd()*6,pr:(rnd()-.5)*.3,n0:rnd()*6});
 const M2={key:'2.0',name:'95 Cinna 2.0',a0:3.4,
-  cap:'95 Cinna 2.0 · Miles\'s new drawing: wavy stripes and seven moons on wobbly orbits',
+  cap:'95 Cinna 2.0 · Miles\'s new drawing: wavy stripes and seven moons going round in circles',
   planet:{base:mc.lb,outline:'#1d1a33',spin:11,stroke:true,
     bands:[[6,18,mc.ye],[-10,4,mc.or],[-34,-24,mc.pk]],
     stripes:[[0,25,mc.pu,1],[40,58,mc.br,1],[70,95,mc.gr,.6],[130,150,mc.bl,1.2],[185,210,mc.pu,1],[240,262,mc.gr,1],[290,310,mc.br,.8],[330,348,mc.bl,1]],
@@ -209,13 +242,14 @@ const M2={key:'2.0',name:'95 Cinna 2.0',a0:3.4,
     ['2.5',mc.pk,{patches:[mc.bl,mc.or,mc.lb]},1.8,.13,'tiny and speckled'],
     ['2.6',mc.ye,{patches:[mc.gr,mc.rd,mc.bl,mc.pu]},2.3,.17,'yellow with bright patches'],
     ['2.7',mc.rd,{stripes:[mc.rd,mc.bl,mc.ye,mc.gr,mc.pk],wave:.8},3.35,.3,'big, with rainbow stripes']
-  ].map(([n,base,s,o,r,desc],i)=>({name:'95 Cinna '+n,desc,base,r,o,a:i*1.9,w:wobble(),
+  ].map(([n,base,s,o,r,desc],i)=>({name:'95 Cinna '+n,desc,base,r,o,a:i*1.9,
     body:{base,spin:18+i*3,outline:'#1d1a33',patches:s.patches?scatter(s.n||6,s.patches,s.n?9:14,s.n?15:24,58):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))};
 const miles={sun:{c:['#fffde8','#ffe066','#ffa63d']},planets:[M1,M2],start:'2.0',
   syscap:'Both 95 Cinna planets orbiting their sun. Tap a planet to zoom in.'};
 
 const li=m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`;
 document.getElementById('mlist2').innerHTML=M2.moons.map(li).join('');
+document.getElementById('mlist4').innerHTML=J4.moons.flatMap(m=>[m,...(m.subs||[])]).map(li).join('');
 document.getElementById('mlist').innerHTML=M1.moons.map(m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`).join('');
 
 const proj=(lon,lat,rot)=>{const L=(lon+rot)*D,B=lat*D;let x=Math.cos(B)*Math.sin(L),y=-Math.sin(B);const z=Math.cos(B)*Math.cos(L);if(z<0){const k=Math.hypot(x,y)||1;x/=k;y/=k;}return[x,y,z];};
@@ -230,10 +264,19 @@ function body(ctx,x,y,r,b,rot){
     for(let la=-90;la<=90;la+=10)pts.push(proj(l0+w*14*Math.sin(la*D*3),la,rot));
     for(let la=90;la>=-90;la-=10)pts.push(proj(l1+w*14*Math.sin(la*D*3),la,rot));
     ctx.beginPath();pts.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](p[0]*r,p[1]*r));ctx.closePath();ctx.fillStyle=col;ctx.fill();if(b.stroke){ctx.lineWidth=Math.max(1,r*.02);ctx.strokeStyle='rgba(25,20,45,.7)';ctx.stroke();}});
-  (b.patches||[]).forEach(p=>{
+  const patch=p=>{
     if(proj(p.lon,p.lat,rot)[2]<-.3)return;
     shape(ctx,p.pts.map(([dl,db])=>{const q=proj(p.lon+dl,Math.max(-89,Math.min(89,p.lat+db)),rot);return[q[0]*r,q[1]*r];}));
-    ctx.fillStyle=p.color;ctx.fill();if(b.stroke){ctx.lineWidth=Math.max(1,r*.025);ctx.strokeStyle='rgba(25,20,45,.75)';ctx.stroke();}});
+    ctx.fillStyle=p.color;ctx.fill();if(b.stroke){ctx.lineWidth=Math.max(1,r*.025);ctx.strokeStyle='rgba(25,20,45,.75)';ctx.stroke();}};
+  (b.patches||[]).forEach(patch);
+  if(b.aurora){ctx.save();ctx.globalCompositeOperation='lighter';const a0=ctx.globalAlpha,n=b.aurora.length;
+    for(let i=0;i<8;i++){const y0=r*(-.9+i*.25),ph=i*1.7;ctx.beginPath();
+      for(let s=0;s<=24;s++){const xx=-r+s/24*2*r,yy=y0+xx*.35+Math.sin(xx/r*2.6+sim*1.6+ph)*r*.13;s?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);}
+      ctx.strokeStyle=b.aurora[i%n];ctx.globalAlpha=a0*(.2+.17*Math.sin(sim*2.3+ph));ctx.lineWidth=r*(.11+.06*Math.sin(sim*1.3+i));ctx.lineCap='round';ctx.stroke();}
+    ctx.restore();}
+  (b.over||[]).forEach(patch);
+  if(b.shimmer){const sx=((sim*.35)%2-1)*r*2.4,g2=ctx.createLinearGradient(sx-r*.5,-r,sx+r*.5,r);
+    g2.addColorStop(0,'rgba(255,255,255,0)');g2.addColorStop(.5,'rgba(255,255,255,.3)');g2.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=g2;ctx.fillRect(-r,-r,2*r,2*r);}
   if(b.lines){ctx.strokeStyle=b.lineColor;ctx.lineWidth=Math.max(1,r*.02);b.lines.forEach(l=>{for(let i=1;i<l.length;i++){const p=proj(...l[i-1],rot),q=proj(...l[i],rot);if(p[2]>0&&q[2]>0){ctx.beginPath();ctx.moveTo(p[0]*r,p[1]*r);ctx.lineTo(q[0]*r,q[1]*r);ctx.stroke();}}});}
   const g=ctx.createRadialGradient(-r*.45,-r*.45,r*.1,-r*.2,-r*.2,r*1.55);
   g.addColorStop(0,'rgba(255,255,255,.22)');g.addColorStop(.45,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(2,3,20,.72)');
@@ -273,9 +316,21 @@ function group(ctx,cx,cy,U,t,P,o){
       ctx.beginPath();ctx.ellipse(cx,cy,mo(m)*U,mo(m)*U*t,0,front?0:Math.PI,front?Math.PI:2*Math.PI);ctx.stroke();});ctx.setLineDash([]);};
   const moon=p=>{const ml=p.m.dead?clock-p.m.dead:9;if(ml>3.6)p.m.dead=null;
     const ms2=ml<2.4?0:ml<3.6?ease((ml-2.4)/1.2):1;if(CUR)CUR.moonHits.push({x:p.x,y:p.y,r:p.r,m:p.m,P});if(!ms2)return;p.r*=ms2;
+    /* baby moons that go around this moon on wobbly ovals */
+    const subs=(p.m.subs||[]).map(s=>{const a=s.a+sim*s.sp,R=p.r*s.o*(1+s.e*Math.sin(sim*s.f+s.ph)),sn=Math.sin(a);
+      let x=p.x+Math.cos(a)*R,y=p.y+sn*R*Math.max(t,.45),r=Math.max(o.min?.8:0,s.r*U*(1+.1*sn))*ms2;
+      if(s.bouncy){const bb=Math.abs(Math.sin(sim*5+s.ph));y-=bb*p.r*.45;r*=1+.2*bb;}return{s,sn,x,y,r};});
+    const sub=q=>{if(q.s.bouncy){ctx.save();ctx.strokeStyle='rgba(200,215,255,.75)';ctx.lineWidth=1;
+        for(let j=1;j<=2;j++){ctx.beginPath();ctx.arc(q.x,q.y,q.r*(1.5+j*.8)+1.5*j,sim*3+j*2,sim*3+j*2+2.3);ctx.stroke();}
+        ctx.fillStyle='rgba(170,195,255,.25)';ctx.beginPath();ctx.arc(q.x,q.y,q.r*2+2,0,7);ctx.fill();ctx.restore();}
+      body(ctx,q.x,q.y,q.r,q.s.body,sim*q.s.body.spin);
+      if(o.names&&o.paths){ctx.font=`${o.small?11:12}px "Patrick Hand",sans-serif`;ctx.fillStyle=q.sn<0?'rgba(230,234,255,.5)':'rgba(240,243,255,.85)';ctx.textAlign='left';
+        ctx.fillText(q.s.name.replace('55 Flizza ',''),q.x+q.r+3,q.y+q.r+8);}};
+    subs.filter(q=>q.sn<0).forEach(sub);
     body(ctx,p.x,p.y,p.r,p.m.body,sim*p.m.body.spin);
+    subs.filter(q=>q.sn>=0).forEach(sub);
     if(o.names){ctx.font=`${o.small?12:14}px "Patrick Hand",sans-serif`;ctx.fillStyle=p.s<0?'rgba(230,234,255,.5)':'rgba(240,243,255,.95)';
-      ctx.textAlign=p.x>cx?'left':'right';ctx.fillText(p.m.name,p.x+(p.x>cx?1:-1)*(p.r+4),p.y-p.r*.4);}};
+      ctx.textAlign=p.x>cx?'left':'right';ctx.fillText(o.small?p.m.name.replace(/^\S+ \S+ /,''):p.m.name,p.x+(p.x>cx?1:-1)*(p.r+4),p.y-p.r*.4);}};
   const life=P.dead?clock-P.dead:9;if(life>3.6)P.dead=null;
   const sc=life<2.4?0:life<3.6?ease((life-2.4)/1.2):1,u=U*sc;
   orbit(false);ms.filter(p=>p.s<0).forEach(moon);
@@ -284,7 +339,7 @@ function group(ctx,cx,cy,U,t,P,o){
   P.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*u,b*u,t,true,c));}
   orbit(true);ms.filter(p=>p.s>=0).forEach(moon);
 }
-const reach=(P,k)=>Math.max(1.05,...P.rings.map(r=>r[1]),...P.moons.map(m=>(1.4+(m.o-1.4)*k)*(m.w?1+m.w.e:1)+m.r));
+const reach=(P,k)=>Math.max(1.05,...P.rings.map(r=>r[1]),...P.moons.map(m=>(1.4+(m.o-1.4)*k)*(m.w?1+m.w.e:1)+m.r*(m.subs?1+Math.max(...m.subs.map(s=>s.o*(1+s.e))):1)));
 /* wobbly orbit: a stretched ellipse whose tilt rocks back and forth and whose long axis slowly turns */
 const kepler=(M,e)=>{let E=M;for(let i=0;i<5;i++)E-=(E-e*Math.sin(E)-M)/(1-e*Math.cos(E));return E;};
 function wpt(a,e,E,w){
@@ -304,7 +359,7 @@ function closeUp(ctx,W,H,P,st){
 }
 
 function solar(ctx,W,H,S,st){
-  const K=.4,sunR=2,gap=1.3;let edge=sunR;
+  const K=.4,sunR=S.sun.r||2,gap=S.sun.gap||1.3;let edge=sunR;
   const lay=S.planets.map(P=>{const e=reach(P,K),orb=edge+gap+e;edge=orb+e;return{P,e,orb};});
   if(lay.length===1)lay[0].orb=Math.max(lay[0].orb,8.5),edge=lay[0].orb+lay[0].e;
   const t=.36,L=lay[lay.length-1];
@@ -322,7 +377,7 @@ function solar(ctx,W,H,S,st){
   paths(false);pos.filter(p=>p.s<0).forEach(planet);
   const R=sunR*U,pulse=1+.04*Math.sin(sim*2);
   const g=ctx.createRadialGradient(cx,cy,R*.6,cx,cy,R*2.6*pulse);
-  g.addColorStop(0,'rgba(255,200,90,.55)');g.addColorStop(1,'rgba(255,140,40,0)');
+  const gl=S.sun.glow||['rgba(255,200,90,.55)','rgba(255,140,40,0)'];g.addColorStop(0,gl[0]);g.addColorStop(1,gl[1]);
   ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*2.6*pulse,0,7);ctx.fill();
   const b=ctx.createRadialGradient(cx-R*.3,cy-R*.3,R*.1,cx,cy,R);
   b.addColorStop(0,S.sun.c[0]);b.addColorStop(.55,S.sun.c[1]);b.addColorStop(1,S.sun.c[2]);
@@ -334,11 +389,11 @@ function solar(ctx,W,H,S,st){
 /* ---------- fun stuff: explosions, aliens, asteroids, astronauts ---------- */
 const find=(st,k)=>st.targets.find(t=>t.key===k);
 const rand=(a,b)=>a+Math.random()*(b-a);
-function boom(st,x,y,r,P,big,M){
-  const B=M?M.body:P.planet;if(M)M.dead=clock;else P.dead=clock;sfx.boom(big);
+function boom(st,x,y,r,P,big,M,quiet){
+  const B=M?M.body:P.planet;if(M)M.dead=clock;else P.dead=clock;if(!quiet)sfx.boom(big);
   const cols=[B.base,...(B.patches||[]).slice(0,6).map(p=>p.color),...(B.stripes||[]).slice(0,6).map(p=>p[2]),'#ffd34a','#ff8a2a','#fff3c4'];
   const parts=Array.from({length:big?80:55},()=>({a:rand(0,6.283),v:rand(.5,1.5)*r*(big?3.4:2.6),s:Math.max(1.6,r*rand(.05,.16)),c:cols[Math.random()*cols.length|0],w:rand(-6,6)}));
-  const word=big?'KA-BOOM!':['BOOM!','ZAP!','POW!'][Math.random()*3|0];
+  const word=quiet&&!big?'':big?'KA-BOOM!':['BOOM!','ZAP!','POW!'][Math.random()*3|0];
   st.fx.push({t:0,dur:2.3,draw(ctx){
     const t=this.t,k=t/this.dur;
     if(t<.45){const g=ctx.createRadialGradient(x,y,0,x,y,r*(1.2+t*6));g.addColorStop(0,`rgba(255,255,230,${1-t/.45})`);g.addColorStop(1,'rgba(255,150,40,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*(1.2+t*6),0,7);ctx.fill();}
@@ -349,9 +404,29 @@ function boom(st,x,y,r,P,big,M){
     ctx.globalAlpha=Math.max(0,1-k*1.3);
     const fs=Math.max(20,Math.min(64,r*.8))*(.6+.4*ease(t/.25));
     ctx.font=`${fs}px "Baloo 2",sans-serif`;ctx.textAlign='center';ctx.lineWidth=fs*.14;ctx.lineJoin='round';
-    ctx.strokeStyle='#3a1206';ctx.strokeText(word,x,y-r*.9-t*20);ctx.fillStyle='#ffd23f';ctx.fillText(word,x,y-r*.9-t*20);
+    if(word){ctx.strokeStyle='#3a1206';ctx.strokeText(word,x,y-r*.9-t*20);ctx.fillStyle='#ffd23f';ctx.fillText(word,x,y-r*.9-t*20);}
   }});
 }
+/* ---------- supernova (Miles's idea): everything on screen blows up ---------- */
+function supernova(st){if(st.nova)return;st.nova=1;sfx.nova();const sys=st.view==='sys';
+  const cols=st.S.planets.flatMap(P=>[P.planet.base,...(P.planet.patches||[]).slice(0,4).map(p=>p.color),...(P.planet.bands||[]).slice(0,4).map(b=>b[2]),...P.moons.map(m=>m.body.base)]).concat(['#fff','#fff3c4','#9fd0ff','#ffd23f','#ff8a2a']);
+  st.fx.push({t:0,dur:3.6,parts:null,draw(ctx,W,H){const t=this.t,c=sys?{x:W/2,y:H/2,r:Math.min(W,H)*.1}:(st.targets[0]||{x:W/2,y:H/2,r:40}),cx=c.x,cy=c.y,R0=Math.max(20,c.r),D=Math.hypot(W,H);
+    if(t<.9){const k=t/.9,R=R0*(1.1+k*1.8)*(1+.05*Math.sin(t*60));const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+      g.addColorStop(0,`rgba(255,255,255,${.5+.5*k})`);g.addColorStop(.45,`rgba(160,210,255,${.35+.45*k})`);g.addColorStop(1,'rgba(120,160,255,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();return;}
+    if(!this.parts){this.parts=Array.from({length:280},()=>({a:rand(0,6.283),v:rand(.15,1)*D*.7,s:rand(2,7),c:cols[Math.random()*cols.length|0],w:rand(-8,8)}));
+      st.moonHits.forEach(h=>{if(!h.m.dead&&!h.P.dead)boom(st,h.x,h.y,Math.max(h.r,4),h.P,false,h.m,true);});
+      st.targets.forEach((tg,i)=>{if(!tg.P.dead)boom(st,tg.x,tg.y,Math.max(tg.r,8),tg.P,true,null,i>0);});}
+    const s=t-.9,fade=Math.max(0,1-s/2.7);
+    const nr=R0*2+s*D*.35,ng=ctx.createRadialGradient(cx,cy,0,cx,cy,nr);ng.addColorStop(0,`rgba(255,255,255,${.9*fade})`);ng.addColorStop(.25,`rgba(255,170,220,${.55*fade})`);
+    ng.addColorStop(.6,`rgba(120,140,255,${.35*fade})`);ng.addColorStop(1,'rgba(80,60,200,0)');ctx.fillStyle=ng;ctx.beginPath();ctx.arc(cx,cy,nr,0,7);ctx.fill();
+    [0,.25].forEach((d,j)=>{const q=s-d;if(q<0)return;ctx.strokeStyle=`rgba(${j?'255,200,140':'200,230,255'},${Math.max(0,1-q/1.6)})`;ctx.lineWidth=Math.max(3,R0*.15)*(1-q/2);
+      ctx.beginPath();ctx.ellipse(cx,cy,R0+q*D*.6,(R0+q*D*.6)*.55,0,0,7);ctx.stroke();});
+    const dd=1-Math.exp(-s*1.6);ctx.globalAlpha=Math.max(0,1-s/2.6);
+    this.parts.forEach(p=>{ctx.save();ctx.translate(cx+Math.cos(p.a)*p.v*dd,cy+Math.sin(p.a)*p.v*dd);ctx.rotate(p.w*s);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.7);ctx.restore();});
+    ctx.globalAlpha=1;if(s<.4){ctx.fillStyle=`rgba(255,255,255,${1-s/.4})`;ctx.fillRect(0,0,W,H);}
+    if(s<2){const fs=Math.min(W*.13,80)*(.6+.4*ease(s/.3));ctx.globalAlpha=Math.min(1,(2-s)*2);ctx.font=`${fs}px "Baloo 2",sans-serif`;ctx.textAlign='center';ctx.lineJoin='round';
+      ctx.lineWidth=fs*.14;ctx.strokeStyle='#1a0b40';ctx.strokeText('SUPERNOVA!',W/2,H*.5+fs*.35);ctx.fillStyle='#fff3c4';ctx.fillText('SUPERNOVA!',W/2,H*.5+fs*.35);ctx.globalAlpha=1;}
+  },end(){st.nova=0;}});}
 
 function ufo(ctx,x,y,s,t){
   const g=ctx.createLinearGradient(0,y-s*.3,0,y+s*.3);g.addColorStop(0,'#eef1f6');g.addColorStop(1,'#6b7280');
@@ -500,6 +575,7 @@ const sfx=(()=>{let ac=null,master,noiseBuf,on=true;
     suck:d=>{tone('sine',320,35,d,.35);noise(d,.25,'lowpass',2000,120,0,.5);},
     bloop:()=>{tone('sine',110,900,.35,.4);tone('triangle',220,1400,.3,.15,.05);},
     ray:()=>{tone('sawtooth',180,1800,.22,.1);tone('square',900,70,.45,.18,.22);noise(.45,.2,'bandpass',3000,600,.22);},
+    nova:()=>{tone('sawtooth',55,700,.9,.14);noise(.9,.3,'bandpass',150,3500,0,.8);noise(2.6,1,'lowpass',2200,40,.9);tone('sine',90,25,2.2,.8,.9);tone('square',140,30,1.4,.15,.9);},
     comet:()=>{noise(2.4,.1,'highpass',6000,1500,0,1);[0,.2,.45].forEach((d,i)=>tone('sine',2093+i*300,2093+i*300,.5,.04,d));},
     roar:()=>{tone('sawtooth',95,38,1.3,.3);tone('square',70,30,1.3,.12);noise(1.3,.35,'lowpass',700,90,0,.1);},
     splat:()=>{tone('sine',700,55,.28,.3);noise(.3,.3,'lowpass',1400,180);},
@@ -831,12 +907,12 @@ stages.forEach(st=>{
     if(st.view!=='sys')return;
     let best=null,bd=1e9;st.hits.forEach(h=>{const d=Math.hypot(h.x-x,h.y-y);if(d<h.r&&d<bd){bd=d;best=h;}});if(best)setView(st,best.key);};
   setView(st,st.view);st.fade=1;
-  st.acts.innerHTML='<button data-a="ufo">Alien attack</button><button data-a="rock">Asteroid</button><button data-a="ship">Astronauts</button><button data-a="bh">Black hole</button><button data-a="ray" aria-pressed="false">Death ray</button>';
+  st.acts.innerHTML='<button data-a="ufo">Alien attack</button><button data-a="rock">Asteroid</button><button data-a="ship">Astronauts</button><button data-a="bh">Black hole</button><button data-a="ray" aria-pressed="false">Death ray</button><button data-a="nova">Supernova</button>';
   st.acts.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(!playing)setPlay(true);
     if(b.dataset.a==='ray'){st.armed=!st.armed;b.setAttribute('aria-pressed',String(st.armed));b.textContent=st.armed?'Death ray ON':'Death ray';
       st.cap.textContent=st.armed?'Death ray ready! Tap a planet or moon to zap it.':(st.view==='sys'?st.S.syscap:st.S.planets.find(P=>P.key===st.view).cap);
       st.cv.parentNode.classList.toggle('armed',st.armed);return;}
-    ({ufo:aliens,rock:asteroid,ship:rocket,bh:blackhole})[b.dataset.a](st);};});
+    ({ufo:aliens,rock:asteroid,ship:rocket,bh:blackhole,nova:supernova})[b.dataset.a](st);};});
 
 function draw(st,dt){
   const cv=st.cv,ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;
