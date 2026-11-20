@@ -126,6 +126,7 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
     <div class="f"><b>Planet colours</b><span>Rainbow stripes from top to bottom: red, orange, yellow, green, light blue, dark blue and purple</span></div>
     <div class="f"><b>Rings</b><span>Rainbow rings that swing in front of the planet and behind it</span></div>
     <div class="f"><b>Moons</b><span>5, from 95 Cinna 3.1 up to 3.5</span></div>
+    <div class="f"><b>The sun</b><span>A red dwarf: smaller and cooler than our sun, glowing red</span></div>
   </div>
   <ul class="moons" id="mlist3"></ul>
   <h3>95 Cinna 2.0</h3>
@@ -268,8 +269,8 @@ const M3={key:'3.0',name:'95 Cinna 3.0',a0:5.2,
     body:{base,spin:18+i*3,outline:rb.bk,stroke:!!s.patches,
       bands:s.bands?s.bands.map((c,j)=>[90-(j+1)*30,90-j*30,c]):null,
       patches:s.patches?scatter(18,s.patches,18,28,70):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))};
-const miles={sun:{c:['#fffde8','#ffe066','#ffa63d']},planets:[M1,M2,M3],start:'3.0',
-  syscap:'All three 95 Cinna planets orbiting their sun. Tap a planet to zoom in.'};
+const miles={sun:{c:['#ffd9c2','#ff5a3a','#9e170e'],glow:['rgba(255,80,50,.55)','rgba(200,30,20,0)'],r:1.4},planets:[M1,M2,M3],start:'3.0',
+  syscap:'All three 95 Cinna planets orbiting their red dwarf sun. Tap a planet to zoom in.'};
 
 const li=m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`;
 document.getElementById('mlist3').innerHTML=M3.moons.map(li).join('');
