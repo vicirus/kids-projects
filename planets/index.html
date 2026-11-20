@@ -116,12 +116,19 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
 
 <section class="band">
   <h2>The 95 Cinna family</h2>
-  <p class="by">by Miles · two patchwork planets and sixteen moons</p>
+  <p class="by">by Miles · three planets and twenty-one moons</p>
   <div class="tabs" id="t2" role="group" aria-label="Choose a view"></div>
   <div class="fig"><canvas id="c2" aria-label="Animation of Miles's 95 Cinna planets and moons"></canvas></div>
   <div class="acts" id="a2"></div>
   <p class="cap" id="p2"></p>
-  <h3>95 Cinna 2.0, the new one</h3>
+  <h3>95 Cinna 3.0, the rainbow planet</h3>
+  <div class="facts">
+    <div class="f"><b>Planet colours</b><span>Rainbow stripes from top to bottom: red, orange, yellow, green, light blue, dark blue and purple</span></div>
+    <div class="f"><b>Rings</b><span>Rainbow rings that swing in front of the planet and behind it</span></div>
+    <div class="f"><b>Moons</b><span>5, from 95 Cinna 3.1 up to 3.5</span></div>
+  </div>
+  <ul class="moons" id="mlist3"></ul>
+  <h3>95 Cinna 2.0</h3>
   <div class="facts">
     <div class="f"><b>Planet colours</b><span>Wavy stripes of purple, brown, green, blue, yellow, orange, pink and red</span></div>
     <div class="f"><b>Moons</b><span>7, from 95 Cinna 2.1 up to 2.7</span></div>
@@ -244,10 +251,28 @@ const M2={key:'2.0',name:'95 Cinna 2.0',a0:3.4,
     ['2.7',mc.rd,{stripes:[mc.rd,mc.bl,mc.ye,mc.gr,mc.pk],wave:.8},3.35,.3,'big, with rainbow stripes']
   ].map(([n,base,s,o,r,desc],i)=>({name:'95 Cinna '+n,desc,base,r,o,a:i*1.9,
     body:{base,spin:18+i*3,outline:'#1d1a33',patches:s.patches?scatter(s.n||6,s.patches,s.n?9:14,s.n?15:24,58):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))};
-const miles={sun:{c:['#fffde8','#ffe066','#ffa63d']},planets:[M1,M2],start:'2.0',
-  syscap:'Both 95 Cinna planets orbiting their sun. Tap a planet to zoom in.'};
+/* Miles: 95 Cinna 3.0, a rainbow planet with rainbow rings that pass in front of it */
+const rb={rd:'#e0483a',or:'#f2933a',ye:'#f4d84a',gr:'#6cc04a',lb:'#a9d8ee',db:'#3f4fb8',pu:'#7a45b8',bk:'#1d1a33'};
+const rbands=[rb.rd,rb.or,rb.ye,rb.gr,rb.lb,rb.db,rb.pu].map((c,i)=>[90-(i+1)*180/7,90-i*180/7,c]);
+const M3={key:'3.0',name:'95 Cinna 3.0',a0:5.2,
+  cap:'95 Cinna 3.0 · Miles\'s rainbow planet, with rainbow rings that pass in front of it',
+  planet:{base:rb.pu,outline:rb.bk,spin:10,bands:[...rbands,...rbands.slice(1).map(b=>[b[1]-1.6,b[1]+1.6,rb.bk])]},
+  rings:[[1.24,1.32,rb.lb],[1.32,1.41,rb.gr],[1.41,1.51,rb.ye],[1.51,1.61,rb.or],[1.61,1.68,rb.rd]],
+  moons:[
+    ['3.1',rb.rd,{stripes:[rb.or,rb.ye,rb.gr,rb.rd,rb.pu,rb.rd],wave:1.2},.22,'red with rainbow ripples'],
+    ['3.2',rb.ye,{stripes:[rb.rd,'#f4f4f4',rb.lb,rb.bk,rb.ye,rb.rd]},.2,'diagonal stripes of red, yellow, light blue and black'],
+    ['3.3',rb.gr,{bands:[rb.pu,rb.rd,rb.db,rb.gr,rb.ye,rb.rd]},.2,'wavy stripes of purple, red, blue, green and yellow'],
+    ['3.4',rb.pu,{patches:[rb.gr,rb.db,rb.rd,'#7a4a30',rb.pu,rb.lb],n:10},.24,'patchwork squares'],
+    ['3.5',rb.db,{patches:[rb.pu,rb.rd,rb.gr,rb.ye,'#7a4a30'],n:10},.23,'patchwork with red, green and yellow']
+  ].map(([n,base,s,r,desc],i)=>({name:'95 Cinna '+n,desc,base,r,o:2.05+i*.36,a:i*2.5+.4,
+    body:{base,spin:18+i*3,outline:rb.bk,stroke:!!s.patches,
+      bands:s.bands?s.bands.map((c,j)=>[90-(j+1)*30,90-j*30,c]):null,
+      patches:s.patches?scatter(18,s.patches,18,28,70):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))};
+const miles={sun:{c:['#fffde8','#ffe066','#ffa63d']},planets:[M1,M2,M3],start:'3.0',
+  syscap:'All three 95 Cinna planets orbiting their sun. Tap a planet to zoom in.'};
 
 const li=m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`;
+document.getElementById('mlist3').innerHTML=M3.moons.map(li).join('');
 document.getElementById('mlist2').innerHTML=M2.moons.map(li).join('');
 document.getElementById('mlist4').innerHTML=J4.moons.flatMap(m=>[m,...(m.subs||[])]).map(li).join('');
 document.getElementById('mlist').innerHTML=M1.moons.map(m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`).join('');
