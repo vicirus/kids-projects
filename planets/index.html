@@ -35,11 +35,13 @@ h2{font:800 clamp(32px,5vw,48px)/1.05 "Baloo 2",sans-serif;margin:0}
 .tabs::-webkit-scrollbar{display:none}.tabs button{flex:none;padding:0 14px}
 @media(max-width:599px){.tabs .long{display:none}}
 .fig canvas{cursor:pointer}
-.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.acts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:12px}
+.acts button{grid-column:span 2}
 .acts button{font:700 17px "Baloo 2",sans-serif;border:none;color:#10132a;padding:0 6px;min-height:48px;border-radius:14px;white-space:nowrap}
-.acts [data-a=ray]{grid-column:span 2}
+.acts [data-a=ray]{grid-column:span 4}
+.acts [data-a=hyper]{grid-column:span 3;background:linear-gradient(90deg,#5ee0ff,#ffffff 50%,#7aa8ff);box-shadow:0 0 14px rgba(94,224,255,.5)}
 .acts [data-a=nova]{grid-column:span 3;background:radial-gradient(circle at 50% 120%,#ffffff,#ffe27a 30%,#ff7ac0 65%,#7a6bff);box-shadow:0 0 14px rgba(255,170,220,.5)}
-@media(min-width:700px){.acts{grid-template-columns:repeat(6,minmax(0,1fr))}.acts [data-a=ray],.acts [data-a=nova]{grid-column:auto}}
+@media(min-width:700px){.acts{grid-template-columns:repeat(7,minmax(0,1fr))}.acts button,.acts [data-a=ray],.acts [data-a=nova],.acts [data-a=hyper]{grid-column:auto}}
 .acts [data-a=ufo]{background:#7ee36b}.acts [data-a=rock]{background:#ff9d4d}.acts [data-a=ship]{background:#cfd8e6}.acts [data-a=bh]{background:#b99cff}.acts [data-a=ray]{background:#ff5d6c}
 .acts [data-a=ray][aria-pressed=true]{background:#fff;box-shadow:0 0 0 3px #ff5d6c,0 0 16px #ff5d6c}
 .fig.armed canvas{cursor:crosshair}
@@ -116,12 +118,20 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
 
 <section class="band">
   <h2>The 95 Cinna family</h2>
-  <p class="by">by Miles · two patchwork planets and sixteen moons</p>
+  <p class="by">by Miles · three planets and twenty-one moons</p>
   <div class="tabs" id="t2" role="group" aria-label="Choose a view"></div>
   <div class="fig"><canvas id="c2" aria-label="Animation of Miles's 95 Cinna planets and moons"></canvas></div>
   <div class="acts" id="a2"></div>
   <p class="cap" id="p2"></p>
-  <h3>95 Cinna 2.0, the new one</h3>
+  <h3>95 Cinna 3.0, the rainbow planet</h3>
+  <div class="facts">
+    <div class="f"><b>Planet colours</b><span>Rainbow stripes from top to bottom: red, orange, yellow, green, light blue, dark blue and purple</span></div>
+    <div class="f"><b>Rings</b><span>Rainbow rings that swing in front of the planet and behind it</span></div>
+    <div class="f"><b>Moons</b><span>5, from 95 Cinna 3.1 up to 3.5</span></div>
+    <div class="f"><b>The sun</b><span>A red dwarf: smaller and cooler than our sun, glowing red</span></div>
+  </div>
+  <ul class="moons" id="mlist3"></ul>
+  <h3>95 Cinna 2.0</h3>
   <div class="facts">
     <div class="f"><b>Planet colours</b><span>Wavy stripes of purple, brown, green, blue, yellow, orange, pink and red</span></div>
     <div class="f"><b>Moons</b><span>7, from 95 Cinna 2.1 up to 2.7</span></div>
@@ -137,7 +147,7 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
   <ul class="moons" id="mlist"></ul>
   <p class="note">On 1.0, the crinkles and the scribbled-out moon are cleaned up. Nothing else was left out.</p>
 </section>
-<footer>Tap "Solar system" to zoom out, then tap a planet to zoom back in. Blown-up planets rebuild themselves, and a comet flies past every so often. Turn on the death ray, then tap a planet or moon to zap it. Or hit Supernova to blow up everything at once!</footer>
+<footer>Tap "Solar system" to zoom out, then tap a planet to zoom back in. Blown-up planets rebuild themselves, and a comet flies past every so often. Turn on the death ray, then tap a planet or moon to zap it. Or hit Supernova to blow up everything at once, or Hyperspeed to spin it all out of control!</footer>
 <div id="game" hidden><canvas id="gc"></canvas><button id="gx">Exit</button>
   <div class="gcard" id="gcard"><h2 id="gh">Secret unlocked!</h2><p id="gp"></p><button id="gstart">Start</button><button id="gback">Back to planets</button></div></div>
 
@@ -244,10 +254,28 @@ const M2={key:'2.0',name:'95 Cinna 2.0',a0:3.4,
     ['2.7',mc.rd,{stripes:[mc.rd,mc.bl,mc.ye,mc.gr,mc.pk],wave:.8},3.35,.3,'big, with rainbow stripes']
   ].map(([n,base,s,o,r,desc],i)=>({name:'95 Cinna '+n,desc,base,r,o,a:i*1.9,
     body:{base,spin:18+i*3,outline:'#1d1a33',patches:s.patches?scatter(s.n||6,s.patches,s.n?9:14,s.n?15:24,58):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))};
-const miles={sun:{c:['#fffde8','#ffe066','#ffa63d']},planets:[M1,M2],start:'2.0',
-  syscap:'Both 95 Cinna planets orbiting their sun. Tap a planet to zoom in.'};
+/* Miles: 95 Cinna 3.0, a rainbow planet with rainbow rings that pass in front of it */
+const rb={rd:'#e0483a',or:'#f2933a',ye:'#f4d84a',gr:'#6cc04a',lb:'#a9d8ee',db:'#3f4fb8',pu:'#7a45b8',bk:'#1d1a33'};
+const rbands=[rb.rd,rb.or,rb.ye,rb.gr,rb.lb,rb.db,rb.pu].map((c,i)=>[90-(i+1)*180/7,90-i*180/7,c]);
+const M3={key:'3.0',name:'95 Cinna 3.0',a0:5.2,
+  cap:'95 Cinna 3.0 · Miles\'s rainbow planet, with rainbow rings that pass in front of it',
+  planet:{base:rb.pu,outline:rb.bk,spin:10,bands:[...rbands,...rbands.slice(1).map(b=>[b[1]-1.6,b[1]+1.6,rb.bk])]},
+  rings:[[1.24,1.32,rb.lb],[1.32,1.41,rb.gr],[1.41,1.51,rb.ye],[1.51,1.61,rb.or],[1.61,1.68,rb.rd]],
+  moons:[
+    ['3.1',rb.rd,{stripes:[rb.or,rb.ye,rb.gr,rb.rd,rb.pu,rb.rd],wave:1.2},.22,'red with rainbow ripples'],
+    ['3.2',rb.ye,{stripes:[rb.rd,'#f4f4f4',rb.lb,rb.bk,rb.ye,rb.rd]},.2,'diagonal stripes of red, yellow, light blue and black'],
+    ['3.3',rb.gr,{bands:[rb.pu,rb.rd,rb.db,rb.gr,rb.ye,rb.rd]},.2,'wavy stripes of purple, red, blue, green and yellow'],
+    ['3.4',rb.pu,{patches:[rb.gr,rb.db,rb.rd,'#7a4a30',rb.pu,rb.lb],n:10},.24,'patchwork squares'],
+    ['3.5',rb.db,{patches:[rb.pu,rb.rd,rb.gr,rb.ye,'#7a4a30'],n:10},.23,'patchwork with red, green and yellow']
+  ].map(([n,base,s,r,desc],i)=>({name:'95 Cinna '+n,desc,base,r,o:2.05+i*.36,a:i*2.5+.4,
+    body:{base,spin:18+i*3,outline:rb.bk,stroke:!!s.patches,
+      bands:s.bands?s.bands.map((c,j)=>[90-(j+1)*30,90-j*30,c]):null,
+      patches:s.patches?scatter(18,s.patches,18,28,70):null,stripes:s.stripes?stripes(s.stripes,s.wave||0):null}}))};
+const miles={sun:{c:['#ffd9c2','#ff5a3a','#9e170e'],glow:['rgba(255,80,50,.55)','rgba(200,30,20,0)'],r:1.4},planets:[M1,M2,M3],start:'3.0',
+  syscap:'All three 95 Cinna planets orbiting their red dwarf sun. Tap a planet to zoom in.'};
 
 const li=m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`;
+document.getElementById('mlist3').innerHTML=M3.moons.map(li).join('');
 document.getElementById('mlist2').innerHTML=M2.moons.map(li).join('');
 document.getElementById('mlist4').innerHTML=J4.moons.flatMap(m=>[m,...(m.subs||[])]).map(li).join('');
 document.getElementById('mlist').innerHTML=M1.moons.map(m=>`<li><span class="dot" style="background:${m.base}"></span><span><b>${m.name}</b> · ${m.desc}</span></li>`).join('');
@@ -374,16 +402,58 @@ function solar(ctx,W,H,S,st){
   const planet=p=>{group(ctx,p.x,p.y,U*p.sc,t,p.P,{k:K,min:1.3*Math.min(1,p.sc)});
     if(showNames&&p.sc>.7){ctx.font=`${W<600?13:16}px "Patrick Hand",sans-serif`;ctx.textAlign='center';ctx.fillStyle='rgba(245,247,255,.95)';
       ctx.shadowColor='rgba(0,0,10,.9)';ctx.shadowBlur=5;ctx.fillText(p.P.name,p.x,p.y-Math.max(U*1.2,p.e*U*t)-8);ctx.shadowBlur=0;}};
-  paths(false);pos.filter(p=>p.s<0).forEach(planet);
   const R=sunR*U,pulse=1+.04*Math.sin(sim*2);
+  if(st.hyper){st.targets=[];st.hits=[];st.hyper.L={cx,cy,U,t,K,lay,R};if(st.hyper.sunGone)return;}
+  else{paths(false);pos.filter(p=>p.s<0).forEach(planet);}
+  const shk=st.hyper?Math.min(6,st.hyper.shake||0):0,scx=cx+(shk?rand(-shk,shk):0),scy=cy+(shk?rand(-shk,shk):0);{const cx=scx,cy=scy;
   const g=ctx.createRadialGradient(cx,cy,R*.6,cx,cy,R*2.6*pulse);
   const gl=S.sun.glow||['rgba(255,200,90,.55)','rgba(255,140,40,0)'];g.addColorStop(0,gl[0]);g.addColorStop(1,gl[1]);
   ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*2.6*pulse,0,7);ctx.fill();
   const b=ctx.createRadialGradient(cx-R*.3,cy-R*.3,R*.1,cx,cy,R);
   b.addColorStop(0,S.sun.c[0]);b.addColorStop(.55,S.sun.c[1]);b.addColorStop(1,S.sun.c[2]);
-  ctx.fillStyle=b;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();
+  ctx.fillStyle=b;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();}
+  if(st.hyper)return;
   paths(true);pos.filter(p=>p.s>=0).forEach(planet);
 }
+/* ---------- hyperspeed: everything spins out of control, crashes, then the sun blows up and it all resets ---------- */
+function hyperspeed(st){if(st.hyper||st.nova)return;setView(st,'sys');st.fade=1;sfx.hyper();
+  st.hyper={ls:sim,bodies:null,sunGone:false,shake:0,sunAt:null};
+  st.fx.push({t:0,dur:30,last:0,draw(ctx,W,H){const h=st.hyper;if(!h||!h.L)return;const L=h.L,t=this.t,dt=Math.min(.05,t-this.last);this.last=t;
+    if(!h.bodies)h.bodies=L.lay.map((l,i)=>({P:l.P,orb:l.orb,e:l.e,i,a:l.P.a0+sim*.32*Math.pow(6/l.orb,1.5),w:.32*Math.pow(6/l.orb,1.5),x:0,y:0,vx:0,vy:0,free:false,gone:false,trail:[]}));
+    const spin=Math.exp(Math.min(t,2.6)*1.5);h.ls+=dt*Math.min(30,1+t*t*5);h.shake=t*2;
+    const live=h.bodies.filter(b=>!b.gone),rad=b=>Math.max(9,b.e*L.U*.55);
+    const blow=(b,x,y,quiet)=>{b.gone=true;boom(st,x,y,Math.max(rad(b),10),b.P,true,null,quiet);};
+    live.forEach(b=>{
+      if(!b.free){b.a+=b.w*spin*dt;const R=b.orb*L.U*(1+(t>1.4?.12*Math.sin(t*11+b.i*2):0));b.x=L.cx+Math.cos(b.a)*R;b.y=L.cy+Math.sin(b.a)*R*L.t;
+        if(t>2.2+b.i*.3){b.free=true;const v=Math.min(Math.max(W,H)*.9,b.w*spin*R*.9),tg=live.filter(o=>o!==b&&!o.gone);let tx=-Math.sin(b.a),ty=Math.cos(b.a);
+          if(tg.length&&Math.random()<.8){const o=tg[Math.random()*tg.length|0];tx=o.x-b.x;ty=o.y-b.y;}const n=Math.hypot(tx,ty)||1;
+          b.vx=tx/n*v+rand(-1,1)*v*.15;b.vy=ty/n*v+rand(-1,1)*v*.15;sfx.whoosh(.6);}}
+      else{b.vx+=rand(-1,1)*W*2*dt;b.vy+=rand(-1,1)*H*2*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
+        const r=rad(b);if(b.x<r*.5||b.x>W-r*.5||b.y<r*.5||b.y>H-r*.5)blow(b,Math.max(r,Math.min(W-r,b.x)),Math.max(r,Math.min(H-r,b.y)),false);}
+      b.trail.push([b.x,b.y]);if(b.trail.length>8)b.trail.shift();});
+    for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const A=live[i],B=live[j];if(A.gone||B.gone)continue;
+      if(Math.hypot(A.x-B.x,A.y-B.y)<(rad(A)+rad(B))*.75){const mx=(A.x+B.x)/2,my=(A.y+B.y)/2;blow(A,mx,my,false);blow(B,mx,my,true);
+        st.fx.push({t:0,dur:1.1,draw(ctx){ctx.globalAlpha=1-this.t/1.1;const fs=34;ctx.font=`${fs}px "Baloo 2",sans-serif`;ctx.textAlign='center';ctx.lineWidth=5;ctx.lineJoin='round';
+          ctx.strokeStyle='#3a1206';ctx.strokeText('CRASH!',mx,my+40+this.t*20);ctx.fillStyle='#ff8a2a';ctx.fillText('CRASH!',mx,my+40+this.t*20);}});}}
+    if(t>7)h.bodies.forEach(b=>{if(!b.gone)blow(b,b.x,b.y,true);});
+    h.bodies.forEach(b=>{if(b.gone)return;ctx.save();ctx.lineCap='round';
+      for(let k=1;k<b.trail.length;k++){ctx.strokeStyle=`rgba(200,220,255,${k/b.trail.length*.35})`;ctx.lineWidth=rad(b)*k/b.trail.length;ctx.beginPath();ctx.moveTo(...b.trail[k-1]);ctx.lineTo(...b.trail[k]);ctx.stroke();}
+      ctx.restore();const s0=sim;sim=h.ls;group(ctx,b.x,b.y,L.U,L.t,b.P,{k:L.K,min:1.3});sim=s0;});
+    if(t<2.6){ctx.save();ctx.globalAlpha=Math.min(.5,t*.2);ctx.strokeStyle='#cfe3ff';ctx.lineWidth=1.5;
+      for(let i=0;i<40;i++){const a=i/40*6.283+t*3,r0=L.R*1.5+((t*600+i*97)%Math.max(W,H));ctx.beginPath();ctx.moveTo(L.cx+Math.cos(a)*r0,L.cy+Math.sin(a)*r0*L.t);ctx.lineTo(L.cx+Math.cos(a)*(r0+40),L.cy+Math.sin(a)*(r0+40)*L.t);ctx.stroke();}ctx.restore();}
+    if(h.sunAt==null&&h.bodies.every(b=>b.gone)){h.sunAt=t+.9;}
+    if(h.sunAt!=null&&t>=h.sunAt){const s=t-h.sunAt,c=st.S.sun.c,D=Math.hypot(W,H);
+      if(!h.sunGone){h.sunGone=true;sfx.boom(true);setTimeout(()=>sfx.boom(true),180);sfx.rumble(2.5);
+        h.parts=Array.from({length:220},()=>({a:rand(0,6.283),v:rand(.1,1)*D*.6,s:rand(2,7),c:c[Math.random()*3|0]}));}
+      const k=1-Math.exp(-s*1.8),fade=Math.max(0,1-s/2.4),nr=L.R+k*D*.7;
+      const g=ctx.createRadialGradient(L.cx,L.cy,0,L.cx,L.cy,nr);g.addColorStop(0,`rgba(255,255,255,${fade})`);g.addColorStop(.3,c[1]);g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.globalAlpha=fade;ctx.fillStyle=g;ctx.beginPath();ctx.arc(L.cx,L.cy,nr,0,7);ctx.fill();
+      h.parts.forEach(p=>{ctx.fillStyle=p.c;ctx.fillRect(L.cx+Math.cos(p.a)*p.v*k,L.cy+Math.sin(p.a)*p.v*k,p.s,p.s);});ctx.globalAlpha=1;
+      if(s<.35){ctx.fillStyle=`rgba(255,255,255,${1-s/.35})`;ctx.fillRect(0,0,W,H);}
+      if(s<1.8){const fs=Math.min(W*.12,72);ctx.globalAlpha=Math.min(1,(1.8-s)*2);ctx.font=`${fs}px "Baloo 2",sans-serif`;ctx.textAlign='center';ctx.lineJoin='round';ctx.lineWidth=fs*.14;
+        ctx.strokeStyle='#2a0800';ctx.strokeText('KA-BLAMMO!',W/2,H*.5);ctx.fillStyle='#ffd23f';ctx.fillText('KA-BLAMMO!',W/2,H*.5);ctx.globalAlpha=1;}
+      if(s>2.8){st.hyper=null;st.fade=0;this.t=this.dur;}}
+  },end(){st.hyper=null;}});}
 
 
 /* ---------- fun stuff: explosions, aliens, asteroids, astronauts ---------- */
@@ -578,6 +648,7 @@ const sfx=(()=>{let ac=null,master,noiseBuf,on=true;
     bloop:()=>{tone('sine',110,900,.35,.4);tone('triangle',220,1400,.3,.15,.05);},
     ray:()=>{tone('sawtooth',180,1800,.22,.1);tone('square',900,70,.45,.18,.22);noise(.45,.2,'bandpass',3000,600,.22);},
     nova:()=>{tone('sawtooth',55,700,.9,.14);noise(.9,.3,'bandpass',150,3500,0,.8);noise(2.6,1,'lowpass',2200,40,.9);tone('sine',90,25,2.2,.8,.9);tone('square',140,30,1.4,.15,.9);},
+    hyper:()=>{tone('sawtooth',70,1500,2.6,.12);tone('square',140,2200,2.6,.04);noise(2.6,.35,'bandpass',200,4500,0,2.2);},
     comet:()=>{noise(2.4,.1,'highpass',6000,1500,0,1);[0,.2,.45].forEach((d,i)=>tone('sine',2093+i*300,2093+i*300,.5,.04,d));},
     roar:()=>{tone('sawtooth',95,38,1.3,.3);tone('square',70,30,1.3,.12);noise(1.3,.35,'lowpass',700,90,0,.1);},
     splat:()=>{tone('sine',700,55,.28,.3);noise(.3,.3,'lowpass',1400,180);},
@@ -902,19 +973,19 @@ function setView(st,v){st.view=v;st.fade=0;
   st.cap.textContent=v==='sys'?st.S.syscap:st.S.planets.find(P=>P.key===v).cap;}
 stages.forEach(st=>{
   st.tabs.innerHTML=`<button data-v="sys">Solar system</button>`+st.S.planets.map(P=>`<button data-v="${P.key}"><span class="long">${P.name.replace(P.key,'')}</span>${P.key}</button>`).join('');
-  st.tabs.onclick=e=>{const b=e.target.closest('button');if(b)setView(st,b.dataset.v);};
+  st.tabs.onclick=e=>{const b=e.target.closest('button');if(b&&!st.hyper)setView(st,b.dataset.v);};
   st.cv.onclick=e=>{const r=st.cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
     if(tapComet(st,x,y))return;
     if(st.armed){deathRay(st,x,y);return;}
     if(st.view!=='sys')return;
     let best=null,bd=1e9;st.hits.forEach(h=>{const d=Math.hypot(h.x-x,h.y-y);if(d<h.r&&d<bd){bd=d;best=h;}});if(best)setView(st,best.key);};
   setView(st,st.view);st.fade=1;
-  st.acts.innerHTML='<button data-a="ufo">Alien attack</button><button data-a="rock">Asteroid</button><button data-a="ship">Astronauts</button><button data-a="bh">Black hole</button><button data-a="ray" aria-pressed="false">Death ray</button><button data-a="nova">Supernova</button>';
-  st.acts.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(!playing)setPlay(true);
+  st.acts.innerHTML='<button data-a="ufo">Alien attack</button><button data-a="rock">Asteroid</button><button data-a="ship">Astronauts</button><button data-a="bh">Black hole</button><button data-a="ray" aria-pressed="false">Death ray</button><button data-a="nova">Supernova</button><button data-a="hyper">Hyperspeed</button>';
+  st.acts.onclick=e=>{const b=e.target.closest('button');if(!b||st.hyper)return;if(!playing)setPlay(true);
     if(b.dataset.a==='ray'){st.armed=!st.armed;b.setAttribute('aria-pressed',String(st.armed));b.textContent=st.armed?'Death ray ON':'Death ray';
       st.cap.textContent=st.armed?'Death ray ready! Tap a planet or moon to zap it.':(st.view==='sys'?st.S.syscap:st.S.planets.find(P=>P.key===st.view).cap);
       st.cv.parentNode.classList.toggle('armed',st.armed);return;}
-    ({ufo:aliens,rock:asteroid,ship:rocket,bh:blackhole,nova:supernova})[b.dataset.a](st);};});
+    ({ufo:aliens,rock:asteroid,ship:rocket,bh:blackhole,nova:supernova,hyper:hyperspeed})[b.dataset.a](st);};});
 
 function draw(st,dt){
   const cv=st.cv,ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;
