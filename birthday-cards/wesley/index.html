@@ -86,8 +86,14 @@
   #bubble{transform-box:view-box;transform-origin:235px 145px;transform:scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
   .popped #bubble{transform:scale(1)}
   .rtext{font-family:"Orbitron","Courier New",monospace;font-weight:700;font-size:20px;fill:#1d3f8f}
-  .hint3{font-family:"Gochi Hand";font-size:20px;fill:#c0392b;animation:pulse 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  .hint3{font-family:"Gochi Hand";font-size:19px;fill:#c0392b}
+  #robotBall,#ball3,#p3svg{touch-action:none}
   .popped .hint3{display:none}
+  .popped.done .hint3,.popped.waitball .hint3{display:inline}
+  #robotBall,#ball3{cursor:pointer}
+  .waitball #robotBall,.waitball #ball3{filter:drop-shadow(0 0 8px #ffd84d)}
+  .done #bubble{transform:scale(0)}
+  .still #robotInner{animation:none!important}
   @keyframes pulse{50%{transform:scale(1.08)}}
   #wesArms path,#wesMouth{transition:d .4s}
   #wes{transform-box:view-box;transform-origin:89px 555px}
@@ -109,6 +115,16 @@
       <defs>
         <filter id="crayon3"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter>
         <clipPath id="ballClip"><circle cx="240" cy="262" r="28"/></clipPath>
+        <g id="ballArt">
+        <g clip-path="url(#ballClip)">
+          <rect x="210" y="232" width="60" height="9" fill="#e8413c"/><rect x="210" y="241" width="60" height="8" fill="#f68b28"/>
+          <rect x="210" y="249" width="60" height="8" fill="#f7d333"/><rect x="210" y="257" width="60" height="9" fill="#4cbf4a"/>
+          <rect x="210" y="266" width="60" height="8" fill="#2f8be0"/><rect x="210" y="274" width="60" height="8" fill="#5a46b8"/>
+          <rect x="210" y="282" width="60" height="10" fill="#b04ac0"/>
+          <path d="M240 232v60M212 262h56M222 238c9 10 9 38 0 48M258 238c-9 10-9 38 0 48" fill="none" stroke="#222" stroke-width="2.5"/>
+        </g>
+        <circle cx="240" cy="262" r="28" fill="none" stroke="#222" stroke-width="3"/>
+        </g>
       </defs>
       <line x1="0" y1="0" x2="0" y2="600" stroke="#333" stroke-width="5"/>
       <!-- floor -->
@@ -137,27 +153,21 @@
           <circle cx="212" cy="230" r="4" fill="#4cbf4a"/><circle cx="268" cy="230" r="4" fill="#f7d333"/>
           <path d="M195 232L176 258L210 268M285 232L304 258L270 268" fill="none" stroke="#7d8aa3" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
         </g>
-        <!-- rainbow basketball -->
-        <g clip-path="url(#ballClip)">
-          <rect x="210" y="232" width="60" height="9" fill="#e8413c"/><rect x="210" y="241" width="60" height="8" fill="#f68b28"/>
-          <rect x="210" y="249" width="60" height="8" fill="#f7d333"/><rect x="210" y="257" width="60" height="9" fill="#4cbf4a"/>
-          <rect x="210" y="266" width="60" height="8" fill="#2f8be0"/><rect x="210" y="274" width="60" height="8" fill="#5a46b8"/>
-          <rect x="210" y="282" width="60" height="10" fill="#b04ac0"/>
-          <path d="M240 232v60M212 262h56M222 238c9 10 9 38 0 48M258 238c-9 10-9 38 0 48" fill="none" stroke="#222" stroke-width="2.5"/>
-        </g>
-        <circle cx="240" cy="262" r="28" fill="none" stroke="#222" stroke-width="3"/>
+        <use id="robotBall" href="#ballArt"/>
         <circle cx="210" cy="268" r="6" fill="#7d8aa3" stroke="#333" stroke-width="2"/>
         <circle cx="270" cy="268" r="6" fill="#7d8aa3" stroke="#333" stroke-width="2"/>
        </g>
       </g>
 
       <!-- box front -->
-      <g filter="url(#crayon3)" stroke="#333" stroke-width="2.5">
+      <g id="boxFront" filter="url(#crayon3)" stroke="#333" stroke-width="2.5">
         <rect x="150" y="336" width="180" height="219" fill="#8fd15a"/>
         <g stroke="#6fbf3a" stroke-width="3" opacity=".6"><path d="M160 360h50M162 380h45M165 480v60M190 470v70M290 360v50M310 365v50M285 480v65M305 475v70"/></g>
         <rect x="225" y="336" width="30" height="219" fill="#e8742c"/>
         <rect x="150" y="428" width="180" height="28" fill="#e8742c"/>
       </g>
+
+      <use id="ball3" href="#ballArt" style="display:none"/>
 
       <!-- lid (pull it off!) -->
       <g id="lid3">
@@ -186,7 +196,6 @@
         <circle cx="80" cy="364" r="4.5" fill="#fff" stroke-width="1.5"/><circle cx="98" cy="364" r="4.5" fill="#fff" stroke-width="1.5"/>
         <circle id="pupL" cx="82" cy="365" r="2.2" fill="#333" stroke="none"/><circle id="pupR" cx="96" cy="365" r="2.2" fill="#333" stroke="none"/>
         <path id="wesMouth" d="M79 374q10 9 20 0" fill="none"/>
-        <path id="tongue" d="M90 378q0 9 5 9t5-9z" fill="#f08a9a" stroke-width="1.5"/>
       </g>
 
       <!-- speech bubble -->
@@ -202,7 +211,8 @@
         </text>
       </g>
 
-      <text class="hint3" x="200" y="590" text-anchor="middle">👆 pull the lid off the big present!</text>
+      <text class="hint3" id="hintA" x="200" y="588" text-anchor="middle">👆 Remove the lid of the present!</text>
+      <text class="hint3" id="hintB" x="200" y="595" text-anchor="middle"></text>
     </svg>
   </div>
 
@@ -380,12 +390,21 @@
   }
   function pop() {
     try {
-      const a = audio(), n = a.sampleRate * .12, b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
-      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 4);
-      const s = a.createBufferSource(), g = a.createGain(); g.gain.value = .5;
-      s.buffer = b; s.connect(g).connect(a.destination); s.start();
+      const a = audio(), t = a.currentTime, n = a.sampleRate * .18, b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 6);
+      const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+      f.type = "highpass"; f.frequency.value = 700; g.gain.value = .9;
+      s.buffer = b; s.connect(f).connect(g).connect(a.destination); s.start(t);
+      const o = a.createOscillator(), og = a.createGain();             // little "thup" underneath
+      o.frequency.setValueAtTime(220, t); o.frequency.exponentialRampToValueAtTime(60, t + .1);
+      og.gain.setValueAtTime(.35, t); og.gain.exponentialRampToValueAtTime(.001, t + .12);
+      o.connect(og).connect(a.destination); o.start(t); o.stop(t + .13);
     } catch (e) {}
   }
+  function thump() { tone(110, .16, "sine", .35, .5); }
+  const unlock = () => { try { audio().resume(); } catch (e) {} };
+  document.addEventListener("pointerdown", unlock, { capture: true });
+  document.addEventListener("touchend", unlock, { capture: true });
   const swoosh = () => tone(300, .35, "triangle", .06, 2.5);
   const tada = () => [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, .35, "triangle", .12), i * 110));
 
@@ -524,57 +543,190 @@
   // ---------- giant present + robot ----------
   const LINES = ["HAP-PY BIRTH-DAY,", "WES-LEY! HERE-IS-YOUR", "PRES-ENT FROM MI-LES.", "BEEP-BOP-BOOP!"];
   const lid3 = document.getElementById("lid3"), svg3 = document.getElementById("p3svg");
+  const robot = document.getElementById("robot"), hint3 = document.getElementById("hintA");
+  function setHint(a, b = "") { hintA.textContent = a; hintB.textContent = b; hintA.setAttribute("y", b ? 574 : 588); }
+  const PLAY_HINT = ["👆 Tap the basketball to pass it!", "Or slide your finger to shoot the basketball!"];
   const tsp = [...document.querySelectorAll(".rl")];
-  let opened3 = false, drag3 = false, sy = 0, lift = 0, moved3 = false, talkTimer;
-  const unit = () => 600 / svg3.getBoundingClientRect().height;   // screen px -> svg units
+  let state = "closed", drag3 = false, sy = 0, lift = 0, moved3 = false, talkTimer, runId = 0;
+  const unit = () => 600 / svg3.getBoundingClientRect().height;
+  const wait = ms => new Promise(r => setTimeout(r, ms));
 
-  function beeps() { [880, 660, 990].forEach((f, i) => setTimeout(() => tone(f, .18, "square", .07), i * 220)); }
-  function speak() {
+  function beeps(fs = [880, 660, 990]) { fs.forEach((f, i) => setTimeout(() => tone(f, .18, "square", .07), i * 220)); }
+  // robot voice (uses the phone's speech voice, deep and slow)
+  function say(text, then) {
+    let done = false; const fin = () => { if (!done) { done = true; then && then(); } };
     try {
-      const say = new SpeechSynthesisUtterance("Hap py. Birth day. Wes ley. Here is your pres ent from Miles.");
-      say.pitch = .1; say.rate = .75;
-      const v = speechSynthesis.getVoices().find(v => /en/i.test(v.lang)); if (v) say.voice = v;
-      say.onend = beeps; speechSynthesis.cancel(); speechSynthesis.speak(say);
-    } catch (e) { beeps(); }
+      const u = new SpeechSynthesisUtterance(text);
+      u.pitch = .1; u.rate = .8; u.volume = 1;
+      const v = speechSynthesis.getVoices().find(v => /^en/i.test(v.lang)); if (v) u.voice = v;
+      u.onend = fin; u.onerror = fin;
+      speechSynthesis.cancel(); speechSynthesis.speak(u);
+      setTimeout(fin, 1200 + text.length * 110);          // safety net if onend never fires
+    } catch (e) { setTimeout(fin, 2500); }
   }
-  function typeOut() {
+  function typeOut(lines) {
     clearInterval(talkTimer); tsp.forEach(t => t.textContent = "");
     p3.classList.add("talking");
     let li = 0, ci2 = 0;
-    talkTimer = setInterval(() => {
-      if (li >= LINES.length) { clearInterval(talkTimer); setTimeout(() => p3.classList.remove("talking"), 1200); return; }
-      tsp[li].textContent = LINES[li].slice(0, ++ci2);
-      if (ci2 % 2) tone(500 + Math.random() * 500, .04, "square", .025);
-      if (ci2 >= LINES[li].length) { li++; ci2 = 0; }
-    }, 70);
+    return new Promise(res => {
+      talkTimer = setInterval(() => {
+        if (li >= lines.length) { clearInterval(talkTimer); p3.classList.remove("talking"); res(); return; }
+        tsp[li].textContent = lines[li].slice(0, ++ci2);
+        if (ci2 >= lines[li].length) { li++; ci2 = 0; }
+      }, 65);
+    });
   }
-  function popRobot() {
-    if (opened3) return; opened3 = true;
-    lid3.style.transform = ""; lid3.classList.add("gone");
-    tone(200, .5, "sine", .12, 4);                       // boing!
-    document.getElementById("robot").style.transform = "translateY(0)";
-    p3.classList.add("popped");
-    wesArmL.setAttribute("d", "M68 402L50 336"); wesArmR.setAttribute("d", "M108 402L128 336");
-    wesMouth.setAttribute("d", "M79 372q10 16 20 0z"); wesMouth.setAttribute("fill", "#a33"); tongue.style.display = "none";
+  // ball helpers
+  const ballAt = (x, y, rot = 0, k = 1) => ball3.setAttribute("transform", `translate(${x} ${y}) rotate(${rot}) scale(${k}) translate(-240 -262)`);
+  function animate(ms, fn) {
+    return new Promise(res => { const t0 = performance.now();
+      (function f(now) { const t = Math.min(1, (now - t0) / ms); fn(t); t < 1 ? requestAnimationFrame(f) : res(); })(t0); });
+  }
+  const bez = (a, c, b, t) => (1 - t) * (1 - t) * a + 2 * (1 - t) * t * c + t * t * b;
+  const wesPose = (l, r) => { wesArmL.setAttribute("d", l); wesArmR.setAttribute("d", r); };
+
+  async function show() {
+    const id = ++runId; state = "busy";
+    clearTimeout(idle); p3.classList.remove("done", "waitball"); p3.classList.add("popped", "still");
+    // put the ball back with the robot
+    svg3.insertBefore(ball3, lid3); ball3.style.display = "none"; robotBall.style.display = "";
+    wes.classList.remove("jump");
+    // robot springs up and starts talking right away
+    robot.style.transition = ""; robot.style.transform = "translateY(0)";
+    tone(200, .5, "sine", .12, 4);
+    wesPose("M68 402L50 336", "M108 402L128 336");
+    wesMouth.setAttribute("d", "M79 372q10 16 20 0z"); wesMouth.setAttribute("fill", "#a33");
     pupL.setAttribute("cx", 80); pupR.setAttribute("cx", 98); pupL.setAttribute("cy", 363); pupR.setAttribute("cy", 363);
     setTimeout(() => wes.classList.add("jump"), 300);
     const r = svg3.getBoundingClientRect();
-    setTimeout(() => { burst(r.left + r.width * .6, r.top + r.height * .45, 120, 11); tada(); }, 450);
-    setTimeout(() => { burst(r.left + 20, r.top + 40, 50, 8); burst(r.right - 20, r.top + 40, 50, 8); }, 1100);
-    setTimeout(() => { typeOut(); speak(); }, 800);
+    setTimeout(() => { burst(r.left + r.width * .6, r.top + r.height * .45, 110, 11); tada(); }, 450);
+    let spoke; const spoken = new Promise(res => spoke = res);
+    // they can start playing catch right away
+    owner = "robot"; state = "play"; setHint(...PLAY_HINT); p3.classList.add("waitball");
+    say("Hap-py, birth-day, Wes-ley! Here, is, your, pres-ent, from Mi-les. Beep. Bop. Boop.", () => { beeps(); spoke(); });
+    await Promise.all([typeOut(LINES), spoken]);
   }
-  lid3.addEventListener("pointerdown", e => { if (opened3) return; drag3 = true; moved3 = false; sy = e.clientY; lid3.setPointerCapture(e.pointerId); });
+
+  let owner = "robot", idle;
+  const R = () => svg3.getBoundingClientRect();
+  async function robotPass() {
+    if (state !== "play" || owner !== "robot") return;
+    state = "passing"; clearTimeout(idle); p3.classList.add("still");
+    robotBall.style.display = "none"; svg3.insertBefore(ball3, lid3); ball3.style.display = ""; ballAt(240, 262);
+    for (let i = 0; i < 2; i++) { await animate(320, t => ballAt(240, 262 + 44 * Math.sin(Math.PI * t))); thump(); }
+    wes.classList.remove("jump");
+    wesPose("M68 402L56 432", "M108 402L122 432");
+    await animate(650, t => ballAt(bez(240, 200, 142, t), bez(262, 120, 530, t), -t * 300, 1 - .2 * t)); thump();
+    await animate(520, t => ballAt(bez(142, 112, 90, t), bez(530, 360, 440, t), -300 - t * 200, .8));
+    thump(); tone(660, .12, "triangle", .1);
+    wesPose("M68 402L67 440", "M108 402L112 440");
+    wes.appendChild(ball3); ballAt(90, 440, -500, .8); wes.appendChild(wesArms);
+    const r = R(); burst(r.left + r.width * .22, r.top + r.height * .72, 40, 7);
+    owner = "wes"; state = "play"; p3.classList.remove("still");
+    setTimeout(() => { if (owner === "wes") wes.classList.add("jump"); }, 400);
+    idle = setTimeout(goHome, 8000);                       // nobody passed back for a while: robot says bye
+  }
+  async function wesPass() {
+    if (state !== "play" || owner !== "wes") return;
+    state = "passing"; clearTimeout(idle); wes.classList.remove("jump"); p3.classList.add("still");
+    await wait(30);
+    svg3.insertBefore(ball3, lid3); ballAt(90, 440, 0, .8);
+    wesPose("M68 402L84 414", "M108 402L124 400");          // push pass
+    tone(400, .1, "triangle", .08);
+    await animate(480, t => ballAt(bez(90, 115, 142, t), bez(440, 380, 530, t), t * 200, .8)); thump();
+    wesPose("M68 402L50 336", "M108 402L128 336");
+    await animate(650, t => ballAt(bez(142, 200, 240, t), bez(530, 120, 262, t), 200 + t * 160, .8 + .2 * t));
+    thump(); tone(880, .12, "square", .06);
+    ball3.style.display = "none"; robotBall.style.display = "";
+    owner = "robot"; state = "play";
+    wes.classList.add("jump");
+  }
+  async function goHome() {
+    if (state !== "play" || owner !== "wes") return;
+    state = "busy"; p3.classList.remove("waitball");
+    tsp.forEach(t => t.textContent = ""); tsp[1].textContent = "BEEP-BOOP!";
+    p3.classList.add("talking");
+    say("Beep. Boop.", () => {}); beeps([990, 520]);
+    await wait(1400);
+    p3.classList.remove("talking", "popped");
+    robot.style.transition = "transform .7s cubic-bezier(.6,-.3,.8,.5)"; robot.style.transform = "translateY(215px)";
+    tone(900, .5, "sine", .1, .2);
+    await wait(800);
+    setHint("👆 Tap the present to see the robot again!");
+    p3.classList.add("popped", "done");
+    state = "done";
+  }
+  // ---- tap = pass, slide = shoot ----
+  let swipe = null, pos = { x: 240, y: 262 };
+  function ballDown(e, who) {
+    e.stopPropagation(); e.preventDefault();
+    if (state !== "play" || owner !== who) return;
+    swipe = { x: e.clientX, y: e.clientY, who };
+    try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+  }
+  robotBall.addEventListener("pointerdown", e => ballDown(e, "robot"));
+  ball3.addEventListener("pointerdown", e => ballDown(e, "wes"));
+  window.addEventListener("pointerup", e => {
+    if (!swipe) return; const sw = swipe; swipe = null;
+    const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+    if (Math.hypot(dx, dy) > 25) shoot(sw.who, dx, dy);
+    else sw.who === "robot" ? robotPass() : wesPass();
+  });
+  window.addEventListener("pointercancel", () => swipe = null);
+
+  async function shoot(who, dx, dy) {
+    if (state !== "play" || owner !== who) return;
+    state = "shooting"; clearTimeout(idle); p3.classList.add("still"); p3.classList.remove("waitball");
+    let x, y, k;
+    if (who === "robot") { x = 240; y = 262; k = 1; robotBall.style.display = "none"; }
+    else { x = 90; y = 440; k = .8; wes.classList.remove("jump"); wesPose("M68 402L50 336", "M108 402L128 336"); }
+    svg3.insertBefore(ball3, lid3); ball3.style.display = ""; ballAt(x, y, 0, k);
+    const len = Math.hypot(dx, dy), sp = 16;
+    let vx = dx / len * sp, vy = dy / len * sp, rot = 0;
+    tone(250, .4, "triangle", .08, 3);                      // whoosh
+    owner = "away";
+    await new Promise(res => {
+      (function f() {
+        vy += .25; x += vx; y += vy; rot += vx * 2;
+        if (y > 552 - 28 * k && vy > 0) { y = 552 - 28 * k; vy = -vy * .7; thump(); }   // bounce off the floor
+        ballAt(x, y, rot, k);
+        if (x < -80 || x > 480 || y < -120) return res();
+        requestAnimationFrame(f);
+      })();
+    });
+    ball3.style.display = "none";
+    setHint("🏀 Whoa! Somebody will pass it back...");
+    p3.classList.add("waitball");
+    if (who === "wes") wes.classList.add("jump");
+    await wait(5000);
+    // the ball comes bouncing back in from the right side
+    setHint("Here it comes!");
+    ball3.style.display = ""; svg3.insertBefore(ball3, lid3);
+    await animate(600, t => ballAt(bez(470, 420, 362, t), bez(300, 330, 524, t), -t * 200, 1)); thump();
+    await animate(650, t => ballAt(bez(362, 340, 240, t), bez(524, 150, 262, t), -200 - t * 200, 1));
+    thump(); tone(880, .12, "square", .06);
+    ball3.style.display = "none"; robotBall.style.display = "";
+    owner = "robot"; state = "play"; p3.classList.remove("still");
+    setHint(...PLAY_HINT);
+  }
+
+  function openLid() {
+    if (state !== "closed") return;
+    lid3.style.transform = ""; lid3.classList.add("gone");
+    show();
+  }
+  lid3.addEventListener("pointerdown", e => { if (state !== "closed") return; drag3 = true; moved3 = false; lift = 0; sy = e.clientY; lid3.setPointerCapture(e.pointerId); });
   lid3.addEventListener("pointermove", e => {
     if (!drag3) return;
     const dy = (sy - e.clientY) * unit(); if (Math.abs(dy) > 5) moved3 = true;
-    lift = Math.max(0, dy); lid3.style.transform = `translate(0px, ${-lift}px) rotate(${-lift / 8}deg)`;
-    if (lift > 70) { drag3 = false; popRobot(); }
+    lift = Math.max(0, Math.min(dy, 120)); lid3.style.transform = `translate(0px, ${-lift}px) rotate(${-lift / 8}deg)`;
   });
-  const end3 = () => { if (!drag3) return; drag3 = false; if (!moved3 || lift > 35) popRobot(); else lid3.style.transform = ""; };
-  lid3.addEventListener("pointerup", end3); lid3.addEventListener("pointercancel", end3);
-  // tap the robot to hear it again
-  document.getElementById("robot").addEventListener("pointerdown", () => { if (opened3) { typeOut(); speak(); } });
-  try { speechSynthesis.getVoices(); } catch (e) {}
+  // the robot appears when the finger lets go (that also lets the phone talk)
+  const end3 = () => { if (!drag3) return; drag3 = false; if (!moved3 || lift > 30) openLid(); else lid3.style.transform = ""; };
+  lid3.addEventListener("pointerup", end3); lid3.addEventListener("pointercancel", () => { drag3 = false; lid3.style.transform = ""; });
+  const again = () => { if (state === "done") show(); };
+  boxFront.addEventListener("pointerdown", again); robot.addEventListener("pointerdown", again);
+  try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); } catch (e) {}
 })();
 </script>
 </body>
