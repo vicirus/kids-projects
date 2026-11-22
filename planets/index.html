@@ -360,12 +360,22 @@ function body(ctx,x,y,r,b,rot){
   const g=ctx.createRadialGradient(-r*.45,-r*.45,r*.1,-r*.2,-r*.2,r*1.55);
   g.addColorStop(0,'rgba(255,255,255,.22)');g.addColorStop(.45,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(2,3,20,.72)');
   ctx.fillStyle=g;ctx.fillRect(-r,-r,2*r,2*r);
-  if(b.glow){const on=RAD.a,bl=r*(.12+.2*on);ctx.shadowColor='rgba(255,255,225,1)';
-    b.glow.forEach((p,i)=>{const q=proj(p.lon,p.lat,rot);if(q[2]<.05)return;const al=(.6+.3*Math.sin(sim*2.4+i*1.3))*(.75+.25*on);ctx.shadowBlur=bl;
-      shape(ctx,p.pts.map(([dl,db])=>{const z=proj(p.lon+dl,Math.max(-89,Math.min(89,p.lat+db)),rot);return[z[0]*r,z[1]*r];}));ctx.fillStyle=`rgba(255,253,240,${al})`;ctx.fill();
-      ctx.shadowBlur=0;ctx.fillStyle='rgba(105,100,92,.85)';ctx.beginPath();ctx.arc(q[0]*r,q[1]*r,Math.max(.7,r*.022),0,7);ctx.fill();});ctx.shadowBlur=0;}
+  const gs=[];
+  if(b.glow){const on=RAD.a,[R,G,B]=b.glowC||[255,253,240];
+    b.glow.forEach((p,i)=>{const q=proj(p.lon,p.lat,rot);if(q[2]<.05)return;
+      const th=Math.pow(.5+.5*Math.sin(sim*3.2+i*1.9),2),str=b.glowAlways?.55+.45*on:on;if(str<.01)return;
+      const al=Math.min(1,(.55+.45*th)*str);gs.push([q,p,th*str]);
+      ctx.shadowColor=`rgba(${R},${G},${B},1)`;ctx.shadowBlur=r*(.08+.3*on*th);
+      shape(ctx,p.pts.map(([dl,db])=>{const z=proj(p.lon+dl,Math.max(-89,Math.min(89,p.lat+db)),rot);return[z[0]*r,z[1]*r];}));
+      ctx.fillStyle=`rgba(${R},${G},${B},${al})`;ctx.fill();
+      if(on>.01){ctx.save();ctx.globalCompositeOperation='lighter';ctx.shadowBlur=0;const cr=p.size*D*r*(.6+.5*th),cg=ctx.createRadialGradient(q[0]*r,q[1]*r,0,q[0]*r,q[1]*r,cr);
+        cg.addColorStop(0,`rgba(255,255,255,${.9*th*on})`);cg.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(q[0]*r,q[1]*r,cr,0,7);ctx.fill();ctx.restore();}
+      if(p.dot){ctx.shadowBlur=0;ctx.fillStyle='rgba(105,100,92,.85)';ctx.beginPath();ctx.arc(q[0]*r,q[1]*r,Math.max(.7,r*.022),0,7);ctx.fill();}});ctx.shadowBlur=0;}
   ctx.restore();
   if(b.outline){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.lineWidth=Math.max(1,r*.03);ctx.strokeStyle=b.outline;ctx.stroke();}
+  if(gs.length&&RAD.a>.01){const[R,G,B]=b.glowC||[255,253,240];ctx.save();ctx.globalCompositeOperation='lighter';
+    gs.forEach(([q,p,k])=>{const px=x+q[0]*r,py=y+q[1]*r,br=Math.max(1.5+2.5*k,p.size*D*r*(1.3+1.4*k));const g=ctx.createRadialGradient(px,py,0,px,py,br);
+      g.addColorStop(0,`rgba(${R},${G},${B},${.6*k*RAD.a*Math.max(.3,q[2])})`);g.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,br,0,7);ctx.fill();});ctx.restore();}
 }
 
 function ringHalf(ctx,cx,cy,ri,ro,t,front,col){
@@ -387,7 +397,7 @@ const C1={key:'1.0',name:'82 Cliffla 1.0',a0:1.8,
     patches:[...scatter(26,[cl.pk,cl.mr,cl.gr,cl.br,cl.rd,cl.gr,cl.pk,cl.br,cl.ye,cl.mr,cl.gr,cl.pk,cl.rd],13,22,66).map(b=>{b.pts=b.pts.map(([x,y])=>[x*1.6,y*1.2]);return b;}),
       ...[[34,cl.or],[28,cl.mr],[22,cl.pk],[16,cl.or],[11,cl.mr],[7,'#f6a347']].map(([z,c])=>ring(200,4,z,c))],
     worms:Array.from({length:30},(_,i)=>worm(i*12+rnd()*12,(rnd()*2-1)*64,7+Math.floor(rnd()*6),[cl.mr,cl.pk,cl.gr,cl.br,cl.rd,cl.or][i%6],.09+rnd()*.07)),
-    glow:Array.from({length:11},(_,i)=>({...blob(i*32.7+rnd()*10,(rnd()*2-1)*62,5+rnd()*4,'#fff'),dot:true}))},
+    glowAlways:true,glow:Array.from({length:11},(_,i)=>{const z=5+rnd()*4;return{...blob(i*32.7+rnd()*10,(rnd()*2-1)*62,z,'#fff'),size:z,dot:true};})},
   rings:[],rad:{c:[255,246,214],k:1},
   moons:[
     ['1.1',.3,'#e5862c',{bands:[[60,90,'#c9502a'],[30,60,'#f2c43a'],[0,30,'#4a3a30'],[-30,0,'#e5862c'],[-60,-30,'#5a7ec0'],[-90,-60,'#f2c43a']]},'stripes of orange, yellow, dark brown and blue'],
@@ -403,7 +413,8 @@ Object.assign(jamie,{name:'55 Flizza',title:'The 55 Flizza family',by:'by Jamie 
 Object.assign(miles,{name:'95 Cinna'});jamie.sun.rc=[140,190,255];miles.sun.rc=[255,110,80];
 /* radiation glow: every warm planet gives off a little (infrared); these give off lots */
 const RADDEF={c:[255,90,70],k:.22},RAD={on:false,a:0};
-J1.rad={c:[255,140,60],k:.7};J4.rad={c:[120,240,200],k:.5};M1.rad={c:[255,150,210],k:.8};M3.rad={c:[255,210,120],k:.8};
+const spots=(P,c,n)=>{P.planet.glowC=c;P.planet.glow=Array.from({length:n},(_,i)=>{const z=6+rnd()*5;return{...blob(i*360/n+rnd()*20,(rnd()*2-1)*58,z,'#fff'),size:z};});};
+spots(J1,[255,190,110],9);spots(J4,[150,255,220],8);spots(M1,[255,170,225],8);spots(M3,[255,235,150],8);
 function radHalo(ctx,x,y,r,rd){const[R,G,B]=rd.c,k=rd.k*RAD.a,p=1+.08*Math.sin(sim*3+x*.01),E=r*(1.5+rd.k*1.5)*p;
   ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,r*.85,x,y,E);
   g.addColorStop(0,`rgba(${R},${G},${B},${.45*k})`);g.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,E,0,7);ctx.fill();
@@ -452,7 +463,6 @@ function group(ctx,cx,cy,U,t,P,o){
   const sc=life<2.4?0:life<3.6?ease((life-2.4)/1.2):1,u=U*sc;
   orbit(false);ms.filter(p=>p.s<0).forEach(moon);
   if(sc>0){P.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*u,b*u,t,false,c));
-  if(RAD.a>.01)radHalo(ctx,cx,cy,u,P.rad||RADDEF);
   body(ctx,cx,cy,u,P.planet,sim*P.planet.spin);
   P.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*u,b*u,t,true,c));}
   orbit(true);ms.filter(p=>p.s>=0).forEach(moon);
@@ -1153,7 +1163,7 @@ GAL.cv.onclick=e=>{const r=GAL.cv.getBoundingClientRect(),x=e.clientX-r.left,y=e
 GAL.cv.style.cursor='pointer';
 const radBtn=document.getElementById('rad'),toast=document.getElementById('toast');let toastT;
 radBtn.onclick=()=>{RAD.on=!RAD.on;radBtn.setAttribute('aria-pressed',String(RAD.on));if(!playing)setPlay(true);clearTimeout(toastT);
-  if(RAD.on){toast.innerHTML='<b>Radiation vision!</b> Stars give off the most radiation by far, so the suns blaze. Anything warm gives off invisible heat radiation too, so every planet glows a little. The radiation planets glow the brightest.';
+  if(RAD.on){toast.innerHTML='<b>Radiation vision!</b> Stars give off the most radiation by far, so the suns blaze. The radiation planets have hot spots on them that pulse and glow, like a nuclear reactor.';
     toast.classList.add('on');toastT=setTimeout(()=>toast.classList.remove('on'),7000);}else toast.classList.remove('on');};
 function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;if(playing)sim+=dt*speed;RAD.a+=((RAD.on?1:0)-RAD.a)*Math.min(1,dt*3);
   if(gEl.hidden){stages.forEach(st=>draw(st,dt));drawGalaxy();}else game(dt);requestAnimationFrame(frame);}
