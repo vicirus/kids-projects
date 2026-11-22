@@ -20,12 +20,21 @@ header::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.
 header>*{position:relative;z-index:1}
 h1{font:400 clamp(38px,7vw,64px)/1.05 "Patrick Hand",cursive;color:#1b1b2e;margin:0;text-wrap:balance}
 header p{margin:6px 0 0;color:#2b2b44;font-size:19px}
-.bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px max(5vw,12px);border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,15,36,.92);backdrop-filter:blur(6px);z-index:5}
+.bar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:10px max(5vw,12px);border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,15,36,.92);backdrop-filter:blur(6px);z-index:5}
 button{font:inherit;font-size:17px;color:var(--ink);background:var(--card);border:1px solid #3a4486;border-radius:22px;min-height:44px;padding:0 18px;cursor:pointer}
 button[aria-pressed=true]{background:#e9ecff;color:#141a3a;border-color:#e9ecff}
 button:focus-visible{outline:3px solid #f7c873;outline-offset:2px}
 .bar button{padding:0 6px;font-size:17px;white-space:nowrap;max-width:none}
-@media(min-width:700px){.bar{grid-template-columns:repeat(4,minmax(0,150px))}}
+@media(min-width:700px){.bar{grid-template-columns:repeat(5,minmax(0,150px))}}
+@media(max-width:420px){.bar{gap:6px}.bar button{font-size:14px;padding:0 2px}}
+#rad[aria-pressed=true]{background:radial-gradient(circle at 50% 50%,#fffbe0,#c8ff7a 55%,#6fdc5a);color:#10200c;border-color:#c8ff7a;box-shadow:0 0 14px rgba(190,255,120,.75)}
+.sys{display:flex;gap:8px;margin:0 0 10px;flex-wrap:wrap}
+.sys button{font:700 17px "Baloo 2",sans-serif;border-radius:14px;min-height:44px}
+.sys button[aria-pressed=true]{background:#f7c873;border-color:#f7c873;color:#141a3a}
+.fig.gal{height:clamp(380px,80vw,640px)}
+#toast{position:fixed;left:50%;bottom:16px;transform:translate(-50%,20px);width:min(92vw,560px);background:#141a3a;border:2px solid #c8ff7a;border-radius:16px;padding:12px 16px;font-size:17px;line-height:1.35;z-index:20;opacity:0;pointer-events:none;transition:opacity .4s,transform .4s;box-shadow:0 0 24px rgba(190,255,120,.35)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast b{color:#c8ff7a;font:700 18px "Baloo 2",sans-serif}
 .band{padding:clamp(24px,4vw,56px) max(5vw,16px);max-width:1240px;margin:0 auto}
 h2{font:800 clamp(32px,5vw,48px)/1.05 "Baloo 2",sans-serif;margin:0}
 .by{color:var(--dim);font-size:20px;margin:2px 0 14px}
@@ -91,15 +100,41 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
   <button id="spd" aria-label="Speed, tap to change">Normal</button>
   <button id="names" aria-pressed="true">Names</button>
   <button id="snd" aria-pressed="true">Sound</button>
+  <button id="rad" aria-pressed="false">Radiation</button>
 </div>
+<div id="toast" role="status"></div>
 
 <section class="band">
-  <h2>The 55 Flizza family</h2>
-  <p class="by">by Jamie · a blue giant sun and four planets: hot, just right, freezing, and the aurora planet</p>
+  <h2>The galaxy</h2>
+  <p class="by">every solar system Jamie and Miles have made, all in one spiral galaxy</p>
+  <div class="fig gal"><canvas id="cg" aria-label="A spiral galaxy holding all of Jamie's and Miles's solar systems"></canvas></div>
+  <p class="cap">3 solar systems so far. Tap one to fly there.</p>
+</section>
+
+<section class="band" id="jamie">
+  <h2 id="h1">The 55 Flizza family</h2>
+  <p class="by" id="by1">by Jamie · a blue giant sun and four planets: hot, just right, freezing, and the aurora planet</p>
+  <div class="sys" id="s1" role="group" aria-label="Choose a solar system"></div>
   <div class="tabs" id="t1" role="group" aria-label="Choose a view"></div>
   <div class="fig"><canvas id="c1" aria-label="Animation of Jamie's 55 Flizza planets and moons"></canvas></div>
   <div class="acts" id="a1"></div>
   <p class="cap" id="p1"></p>
+  <div data-sys="82 Cliffla" hidden>
+  <h3>82 Cliffla 1.0, a glowing hot Jupiter</h3>
+  <div class="facts">
+    <div class="f"><b>What it is</b><span>A hot Jupiter: a giant gas planet that's really hot</span></div>
+    <div class="f"><b>Size</b><span>0.9 Jupiters, a little smaller than Jupiter</span></div>
+    <div class="f"><b>Looks like</b><span>Swirls of pink, dark red, green, brown, orange and yellow, with a bullseye in the middle. The white areas glow!</span></div>
+    <div class="f"><b>Age</b><span>8.79 billion years, almost twice as old as Earth</span></div>
+    <div class="f"><b>Surface temperature</b><span>490°F to 740°F</span></div>
+    <div class="f"><b>Core temperature</b><span>9,470°F to 12,400°F</span></div>
+    <div class="f"><b>Wind</b><span>None at all. There is no wind on 82 Cliffla 1.0</span></div>
+    <div class="f"><b>Radiation</b><span>Gives off loads of it. Tap Radiation to see it glow</span></div>
+  </div>
+  <ul class="moons" id="mlistc"></ul>
+  <p class="note">The sun's colour is Claude's guess, since the drawing doesn't show it.</p>
+  </div>
+  <div data-sys="55 Flizza">
   <h3>55 Flizza 4.0, the aurora planet</h3>
   <div class="facts">
     <div class="f"><b>Looks like</b><span>Glowing northern lights: purple, green and blue swirls, with black streaks of darkness</span></div>
@@ -127,9 +162,10 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
     <div class="f"><b>The sun</b><span>A blue giant, about 10 times bigger than our sun</span></div>
   </div>
   <p class="note">Jamie hasn't drawn 1.0 yet, so its colours are Claude's guess. 2.0 is built from Jamie's description.</p>
+  </div>
 </section>
 
-<section class="band">
+<section class="band" id="miles">
   <h2>The 95 Cinna family</h2>
   <p class="by">by Miles · three planets and twenty-one moons</p>
   <div class="tabs" id="t2" role="group" aria-label="Choose a view"></div>
@@ -160,7 +196,7 @@ footer{padding:8px max(5vw,16px) 40px;color:var(--dim);font-size:15px;text-align
   <ul class="moons" id="mlist"></ul>
   <p class="note">On 1.0, the crinkles and the scribbled-out moon are cleaned up. Nothing else was left out.</p>
 </section>
-<footer>Tap "Solar system" to zoom out, then tap a planet to zoom back in. Blown-up planets rebuild themselves, and a comet flies past every so often. Turn on the death ray, then tap a planet or moon to zap it. Or hit Supernova to blow up everything at once, or Hyperspeed to spin it all out of control!</footer>
+<footer>Tap "Solar system" to zoom out, then tap a planet to zoom back in. Blown-up planets rebuild themselves, and a comet flies past every so often. Turn on the death ray, then tap a planet or moon to zap it. Or hit Supernova to blow up everything at once, or Hyperspeed to spin it all out of control! Tap Radiation to see which suns and planets glow.</footer>
 <div id="game" hidden><canvas id="gc"></canvas><button id="gx">Exit</button>
   <div class="gcard" id="gcard"><h2 id="gh">Secret unlocked!</h2><p id="gp"></p><div id="gextra"></div><button id="gstart">Start</button><button id="gback">Back to planets</button><div id="gfoot"></div></div></div>
 
@@ -310,6 +346,8 @@ function body(ctx,x,y,r,b,rot){
     shape(ctx,p.pts.map(([dl,db])=>{const q=proj(p.lon+dl,Math.max(-89,Math.min(89,p.lat+db)),rot);return[q[0]*r,q[1]*r];}));
     ctx.fillStyle=p.color;ctx.fill();if(b.stroke){ctx.lineWidth=Math.max(1,r*.025);ctx.strokeStyle='rgba(25,20,45,.75)';ctx.stroke();}};
   (b.patches||[]).forEach(patch);
+  (b.worms||[]).forEach(w=>{ctx.strokeStyle=w.c;ctx.lineWidth=Math.max(1,w.w*r);ctx.lineCap=ctx.lineJoin='round';ctx.beginPath();let on=false;
+    w.p.forEach(([lo,la])=>{const q=proj(lo,la,rot);if(q[2]>0){on?ctx.lineTo(q[0]*r,q[1]*r):ctx.moveTo(q[0]*r,q[1]*r);on=true;}else on=false;});ctx.stroke();});
   if(b.aurora){ctx.save();ctx.globalCompositeOperation='lighter';const a0=ctx.globalAlpha,n=b.aurora.length;
     for(let i=0;i<8;i++){const y0=r*(-.9+i*.25),ph=i*1.7;ctx.beginPath();
       for(let s=0;s<=24;s++){const xx=-r+s/24*2*r,yy=y0+xx*.35+Math.sin(xx/r*2.6+sim*1.6+ph)*r*.13;s?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);}
@@ -321,7 +359,12 @@ function body(ctx,x,y,r,b,rot){
   if(b.lines){ctx.strokeStyle=b.lineColor;ctx.lineWidth=Math.max(1,r*.02);b.lines.forEach(l=>{for(let i=1;i<l.length;i++){const p=proj(...l[i-1],rot),q=proj(...l[i],rot);if(p[2]>0&&q[2]>0){ctx.beginPath();ctx.moveTo(p[0]*r,p[1]*r);ctx.lineTo(q[0]*r,q[1]*r);ctx.stroke();}}});}
   const g=ctx.createRadialGradient(-r*.45,-r*.45,r*.1,-r*.2,-r*.2,r*1.55);
   g.addColorStop(0,'rgba(255,255,255,.22)');g.addColorStop(.45,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(2,3,20,.72)');
-  ctx.fillStyle=g;ctx.fillRect(-r,-r,2*r,2*r);ctx.restore();
+  ctx.fillStyle=g;ctx.fillRect(-r,-r,2*r,2*r);
+  if(b.glow){const on=RAD.a,bl=r*(.12+.2*on);ctx.shadowColor='rgba(255,255,225,1)';
+    b.glow.forEach((p,i)=>{const q=proj(p.lon,p.lat,rot);if(q[2]<.05)return;const al=(.6+.3*Math.sin(sim*2.4+i*1.3))*(.75+.25*on);ctx.shadowBlur=bl;
+      shape(ctx,p.pts.map(([dl,db])=>{const z=proj(p.lon+dl,Math.max(-89,Math.min(89,p.lat+db)),rot);return[z[0]*r,z[1]*r];}));ctx.fillStyle=`rgba(255,253,240,${al})`;ctx.fill();
+      ctx.shadowBlur=0;ctx.fillStyle='rgba(105,100,92,.85)';ctx.beginPath();ctx.arc(q[0]*r,q[1]*r,Math.max(.7,r*.022),0,7);ctx.fill();});ctx.shadowBlur=0;}
+  ctx.restore();
   if(b.outline){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.lineWidth=Math.max(1,r*.03);ctx.strokeStyle=b.outline;ctx.stroke();}
 }
 
@@ -333,6 +376,39 @@ function ringHalf(ctx,cx,cy,ri,ro,t,front,col){
 }
 
 const stars=Array.from({length:160},()=>[rnd(),rnd(),rnd()*1.3+.3,rnd()*6]);
+
+/* Jamie: 82 Cliffla 1.0, a hot Jupiter whose white areas glow (from the drawing) */
+const cl={pk:'#d9507e',mr:'#7c1f30',gr:'#6cbf3a',br:'#7a4422',or:'#ee8a2a',rd:'#e2512c',ye:'#f4d23a'};
+const ring=(lon,lat,size,color)=>({lon,lat,color,pts:Array.from({length:12},(_,i)=>{const a=i/12*2*Math.PI;return[Math.cos(a)*size/Math.max(.4,Math.cos(lat*D)),Math.sin(a)*size];})});
+const worm=(lon,lat,len,c,w)=>{const p=[];let a=rnd()*6;for(let i=0;i<len;i++){p.push([lon,lat]);a+=(rnd()-.5)*1.8;lon+=Math.cos(a)*8;lat=Math.max(-72,Math.min(72,lat+Math.sin(a)*7));}return{p,c,w};};
+const C1={key:'1.0',name:'82 Cliffla 1.0',a0:1.8,
+  cap:'82 Cliffla 1.0 · Jamie\'s hot Jupiter: wild swirls of colour, and the white areas glow',
+  planet:{base:'#f7f3e6',outline:'#3a2a20',spin:7,stroke:true,
+    patches:[...scatter(26,[cl.pk,cl.mr,cl.gr,cl.br,cl.rd,cl.gr,cl.pk,cl.br,cl.ye,cl.mr,cl.gr,cl.pk,cl.rd],13,22,66).map(b=>{b.pts=b.pts.map(([x,y])=>[x*1.6,y*1.2]);return b;}),
+      ...[[34,cl.or],[28,cl.mr],[22,cl.pk],[16,cl.or],[11,cl.mr],[7,'#f6a347']].map(([z,c])=>ring(200,4,z,c))],
+    worms:Array.from({length:30},(_,i)=>worm(i*12+rnd()*12,(rnd()*2-1)*64,7+Math.floor(rnd()*6),[cl.mr,cl.pk,cl.gr,cl.br,cl.rd,cl.or][i%6],.09+rnd()*.07)),
+    glow:Array.from({length:11},(_,i)=>({...blob(i*32.7+rnd()*10,(rnd()*2-1)*62,5+rnd()*4,'#fff'),dot:true}))},
+  rings:[],rad:{c:[255,246,214],k:1},
+  moons:[
+    ['1.1',.3,'#e5862c',{bands:[[60,90,'#c9502a'],[30,60,'#f2c43a'],[0,30,'#4a3a30'],[-30,0,'#e5862c'],[-60,-30,'#5a7ec0'],[-90,-60,'#f2c43a']]},'stripes of orange, yellow, dark brown and blue'],
+    ['1.2',.2,'#f4f2ea',{patches:[ring(0,0,16,'#8a7a50')],lines:[0,60,120,180,240,300].map(l=>[[l,-85],[l,85]]),lineColor:'rgba(110,100,80,.75)'},'white, with a gray middle and spokes like a wheel'],
+    ['1.3',.08,'#a8442a',{patches:scatter(3,['#4a2a1a','#d06a3a'],14,24,50)},'tiny and red-brown'],
+    ['1.4',.21,'#e88a2a',{patches:[ring(0,0,24,'#5aa83a'),ring(0,0,15,'#f2d03a'),ring(0,0,7,'#4a3a20')]},'orange, with a green and yellow middle']
+  ].map(([n,r,base,x,desc],i)=>({name:'82 Cliffla '+n,desc,base,r,o:1.9+i*.5,a:i*2.3+.7,body:{base,spin:16+i*4,outline:'#2a1e18',...x}}))};
+const cliffla={name:'82 Cliffla',title:'The 82 Cliffla family',by:'by Jamie · a brand-new solar system, starting with a glowing hot Jupiter and its 4 moons',
+  sun:{c:['#fffdf0','#ffe88a','#f2a630'],glow:['rgba(255,220,120,.55)','rgba(255,170,60,0)'],rc:[255,220,130],r:2.2},planets:[C1],start:'1.0',
+  syscap:'Jamie\'s new 82 Cliffla solar system. Tap the planet to zoom in.'};
+document.getElementById('mlistc').innerHTML=C1.moons.map(li).join('');
+Object.assign(jamie,{name:'55 Flizza',title:'The 55 Flizza family',by:'by Jamie · a blue giant sun and four planets: hot, just right, freezing, and the aurora planet'});
+Object.assign(miles,{name:'95 Cinna'});jamie.sun.rc=[140,190,255];miles.sun.rc=[255,110,80];
+/* radiation glow: every warm planet gives off a little (infrared); these give off lots */
+const RADDEF={c:[255,90,70],k:.22},RAD={on:false,a:0};
+J1.rad={c:[255,140,60],k:.7};J4.rad={c:[120,240,200],k:.5};M1.rad={c:[255,150,210],k:.8};M3.rad={c:[255,210,120],k:.8};
+function radHalo(ctx,x,y,r,rd){const[R,G,B]=rd.c,k=rd.k*RAD.a,p=1+.08*Math.sin(sim*3+x*.01),E=r*(1.5+rd.k*1.5)*p;
+  ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,r*.85,x,y,E);
+  g.addColorStop(0,`rgba(${R},${G},${B},${.45*k})`);g.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,E,0,7);ctx.fill();
+  if(rd.k>=.5)for(let j=0;j<3;j++){const f=(sim*.6+j/3)%1;ctx.strokeStyle=`rgba(${R},${G},${B},${(1-f)*.45*k})`;ctx.lineWidth=Math.max(1,r*.035);ctx.beginPath();ctx.arc(x,y,r*(1.08+f*1.3),0,7);ctx.stroke();}
+  ctx.restore();}
 let CUR=null,showNames=true,speed=1,playing=true,sim=0,clock=0,last=performance.now();
 const ease=x=>x<=0?0:x>=1?1:x*x*(3-2*x);
 
@@ -376,6 +452,7 @@ function group(ctx,cx,cy,U,t,P,o){
   const sc=life<2.4?0:life<3.6?ease((life-2.4)/1.2):1,u=U*sc;
   orbit(false);ms.filter(p=>p.s<0).forEach(moon);
   if(sc>0){P.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*u,b*u,t,false,c));
+  if(RAD.a>.01)radHalo(ctx,cx,cy,u,P.rad||RADDEF);
   body(ctx,cx,cy,u,P.planet,sim*P.planet.spin);
   P.rings.forEach(([a,b,c])=>ringHalf(ctx,cx,cy,a*u,b*u,t,true,c));}
   orbit(true);ms.filter(p=>p.s>=0).forEach(moon);
@@ -424,7 +501,15 @@ function solar(ctx,W,H,S,st){
   ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*2.6*pulse,0,7);ctx.fill();
   const b=ctx.createRadialGradient(cx-R*.3,cy-R*.3,R*.1,cx,cy,R);
   b.addColorStop(0,S.sun.c[0]);b.addColorStop(.55,S.sun.c[1]);b.addColorStop(1,S.sun.c[2]);
-  ctx.fillStyle=b;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();}
+  ctx.fillStyle=b;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();
+  if(RAD.a>.01){const a=RAD.a,[r0,g0,b0]=S.sun.rc||[255,210,120];ctx.save();ctx.globalCompositeOperation='lighter';
+    const cg=ctx.createRadialGradient(cx,cy,R*.8,cx,cy,R*5.5*pulse);cg.addColorStop(0,`rgba(${r0},${g0},${b0},${.7*a})`);cg.addColorStop(.35,`rgba(${r0},${g0},${b0},${.2*a})`);cg.addColorStop(1,`rgba(${r0},${g0},${b0},0)`);
+    ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,R*5.5*pulse,0,7);ctx.fill();
+    for(let i=0;i<14;i++){const an=i/14*2*Math.PI+sim*.15,L=R*(2.3+.7*Math.sin(sim*3+i*1.9)),w=.09;ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(an-w)*R*.9,cy+Math.sin(an-w)*R*.9);ctx.lineTo(cx+Math.cos(an)*L,cy+Math.sin(an)*L);ctx.lineTo(cx+Math.cos(an+w)*R*.9,cy+Math.sin(an+w)*R*.9);ctx.closePath();
+      const lg=ctx.createLinearGradient(cx,cy,cx+Math.cos(an)*L,cy+Math.sin(an)*L);lg.addColorStop(0,`rgba(255,255,255,${.8*a})`);lg.addColorStop(1,`rgba(${r0},${g0},${b0},0)`);ctx.fillStyle=lg;ctx.fill();}
+    for(let j=0;j<3;j++){const f=(sim*.4+j/3)%1;ctx.strokeStyle=`rgba(${r0},${g0},${b0},${(1-f)*.55*a})`;ctx.lineWidth=Math.max(1.5,R*.12);ctx.beginPath();ctx.arc(cx,cy,R*(1.2+f*3),0,7);ctx.stroke();}
+    ctx.fillStyle=`rgba(255,255,255,${.5*a})`;ctx.beginPath();ctx.arc(cx,cy,R*.75,0,7);ctx.fill();ctx.restore();}}
   if(st.hyper)return;
   paths(true);pos.filter(p=>p.s>=0).forEach(planet);
 }
@@ -1003,11 +1088,20 @@ function game(dt){
 }
 
 const stages=[['c1','t1','p1',jamie,'a1','Jamie'],['c2','t2','p2',miles,'a2','Miles']].map(([c,t,p,S,a,kid],i)=>({kid,armed:false,moonHits:[],fx:[],nextComet:4+i*5,warp:null,targets:[],acts:document.getElementById(a),cv:document.getElementById(c),tabs:document.getElementById(t),cap:document.getElementById(p),S,view:S.start,fade:1,hits:[]}));
+stages[0].systems=[jamie,cliffla];stages[1].systems=[miles];
+function buildTabs(st){st.tabs.innerHTML=`<button data-v="sys">Solar system</button>`+st.S.planets.map(P=>`<button data-v="${P.key}"><span class="long">${P.name.replace(P.key,'')}</span>${P.key}</button>`).join('');}
+function setSys(st,S){if(st.hyper||st.nova||st.S===S)return;st.S=S;
+  st.sys.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.s===S.name)));
+  st.h.textContent=S.title;st.by.textContent=S.by;st.sec.querySelectorAll('[data-sys]').forEach(d=>d.hidden=d.dataset.sys!==S.name);
+  buildTabs(st);setView(st,S.start);}
+stages.forEach(st=>{st.sec=st.cv.closest('section');st.sys=st.sec.querySelector('.sys');st.h=st.sec.querySelector('h2');st.by=st.sec.querySelector('.by');
+  if(!st.sys)return;st.sys.innerHTML=st.systems.map(S=>`<button data-s="${S.name}" aria-pressed="${S===st.S}">${S.name}</button>`).join('');
+  st.sys.onclick=e=>{const b=e.target.closest('button');if(b)setSys(st,st.systems.find(S=>S.name===b.dataset.s));};});
 function setView(st,v){st.view=v;st.fade=0;
   st.tabs.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===v)));
   st.cap.textContent=v==='sys'?st.S.syscap:st.S.planets.find(P=>P.key===v).cap;}
 stages.forEach(st=>{
-  st.tabs.innerHTML=`<button data-v="sys">Solar system</button>`+st.S.planets.map(P=>`<button data-v="${P.key}"><span class="long">${P.name.replace(P.key,'')}</span>${P.key}</button>`).join('');
+  buildTabs(st);
   st.tabs.onclick=e=>{const b=e.target.closest('button');if(b&&!st.hyper)setView(st,b.dataset.v);};
   st.cv.onclick=e=>{const r=st.cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
     if(tapComet(st,x,y))return;
@@ -1034,7 +1128,35 @@ function draw(st,dt){
   ctx.globalAlpha=1;
   st.fx.slice().forEach(f=>{f.t+=dt;if(f.draw){ctx.save();f.draw(ctx,W,H);ctx.restore();}if(f.t>=f.dur){st.fx.splice(st.fx.indexOf(f),1);if(f.end)f.end();}});
 }
-function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;if(playing)sim+=dt*speed;if(gEl.hidden)stages.forEach(st=>draw(st,dt));else game(dt);requestAnimationFrame(frame);}
+/* ---------- galaxy: every solar system both kids made, on the arms of one spiral galaxy ---------- */
+const GAL={cv:document.getElementById('cg'),boxes:[],
+  stars:Array.from({length:900},()=>{const arm=rnd()<.5?0:1,t=Math.pow(rnd(),.8),sp=(rnd()-.5)*(.25+.4*(1-t));return{r:.05+t*.95,a:arm*Math.PI+t*4.6+sp,s:rnd()*1.6+.4,c:['255,255,255','190,210,255','255,200,230','255,235,190'][Math.floor(rnd()*4)],p:rnd()*6};}),
+  spots:[{S:jamie,kid:'jamie',x:.26,y:.25,lab:"Jamie's 55 Flizza"},{S:cliffla,kid:'jamie',x:.75,y:.4,lab:"Jamie's 82 Cliffla"},{S:miles,kid:'miles',x:.36,y:.77,lab:"Miles's 95 Cinna"}]};
+GAL.spots.forEach(s=>s.st={targets:[],hits:[],warp:null,fx:[],moonHits:[]});
+function drawGalaxy(){const cv=GAL.cv,bb=cv.getBoundingClientRect();if(bb.bottom<0||bb.top>innerHeight)return;
+  const ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);bg(ctx,W,H);
+  const cx=W/2,cy=H/2,tl=.55,Rg=Math.min(W*.5,H*.5/tl),rot=sim*.02;
+  ctx.save();ctx.globalCompositeOperation='lighter';
+  GAL.stars.forEach(s=>{const a=s.a+rot;ctx.fillStyle=`rgba(${s.c},${(.35+.3*Math.sin(clock*1.2+s.p))*(1.1-s.r*.5)})`;ctx.fillRect(cx+Math.cos(a)*s.r*Rg,cy+Math.sin(a)*s.r*Rg*tl,s.s,s.s);});
+  const k=1+RAD.a*.7,cr=Rg*.3*k;ctx.translate(cx,cy);ctx.scale(1,tl);const cg=ctx.createRadialGradient(0,0,0,0,0,cr);
+  cg.addColorStop(0,'rgba(255,250,230,.95)');cg.addColorStop(.25,'rgba(255,215,160,.5)');cg.addColorStop(1,'rgba(160,120,255,0)');ctx.fillStyle=cg;ctx.beginPath();ctx.arc(0,0,cr,0,7);ctx.fill();ctx.restore();
+  const bw=Math.min(W*.48,420),bh=Math.min(bw*.7,H*.42),sn=showNames;showNames=false;GAL.boxes=[];
+  GAL.spots.forEach(sp=>{const x=sp.x*W,y=sp.y*H;CUR=sp.st;ctx.save();ctx.translate(x-bw/2,y-bh/2);solar(ctx,bw,bh,sp.S,sp.st);ctx.restore();
+    GAL.boxes.push({sp,x0:x-bw/2,y0:y-bh/2,x1:x+bw/2,y1:y+bh/2});
+    ctx.font=`600 ${W<600?14:18}px "Baloo 2",sans-serif`;ctx.textAlign='center';ctx.fillStyle='#f7c873';ctx.shadowColor='rgba(0,0,10,.95)';ctx.shadowBlur=6;
+    ctx.fillText(sp.lab,x,y-bh/2+(W<600?8:12));ctx.shadowBlur=0;});showNames=sn;}
+GAL.cv.onclick=e=>{const r=GAL.cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  const b=GAL.boxes.find(b=>x>b.x0&&x<b.x1&&y>b.y0&&y<b.y1);if(!b)return;const st=stages.find(s=>s.systems.includes(b.sp.S));
+  setSys(st,b.sp.S);if(!st.hyper)setView(st,'sys');st.sec.scrollIntoView({behavior:'smooth'});};
+GAL.cv.style.cursor='pointer';
+const radBtn=document.getElementById('rad'),toast=document.getElementById('toast');let toastT;
+radBtn.onclick=()=>{RAD.on=!RAD.on;radBtn.setAttribute('aria-pressed',String(RAD.on));if(!playing)setPlay(true);clearTimeout(toastT);
+  if(RAD.on){toast.innerHTML='<b>Radiation vision!</b> Stars give off the most radiation by far, so the suns blaze. Anything warm gives off invisible heat radiation too, so every planet glows a little. The radiation planets glow the brightest.';
+    toast.classList.add('on');toastT=setTimeout(()=>toast.classList.remove('on'),7000);}else toast.classList.remove('on');};
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;if(playing)sim+=dt*speed;RAD.a+=((RAD.on?1:0)-RAD.a)*Math.min(1,dt*3);
+  if(gEl.hidden){stages.forEach(st=>draw(st,dt));drawGalaxy();}else game(dt);requestAnimationFrame(frame);}
 
 const play=document.getElementById('play');
 const setPlay=v=>{playing=v;play.textContent=v?'Pause':'Play';play.setAttribute('aria-pressed',String(!v));};
