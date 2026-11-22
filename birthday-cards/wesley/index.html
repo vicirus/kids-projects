@@ -335,7 +335,6 @@
         <!-- arms: one holding balloon up to mouth -->
         <path d="M138 452l-12 30" stroke="#e0a868" stroke-width="7" stroke-linecap="round"/>
         <path id="armR" d="M182 452L222 470" stroke="#e0a868" stroke-width="7" stroke-linecap="round" fill="none"/>
-        <path id="armR2" d="M160 462L222 470" stroke="#e0a868" stroke-width="7" stroke-linecap="round" fill="none"/>
         <!-- head -->
         <g id="head">
           <!-- curly brown hair -->
@@ -483,7 +482,6 @@
     const dy = d * 22;
     pumpHandle.setAttribute("transform", `translate(0 ${dy})`);
     armR.setAttribute("d", `M182 452L222 ${470 + dy}`);
-    armR2.setAttribute("d", `M160 462L222 ${470 + dy}`);
   }
   function popOne() {
     const up = balloons.filter(b => b.state === "rise" && b.y < 420 && b.y > 30);
