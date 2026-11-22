@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Happy Birthday Wesley! — from Miles</title>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gochi+Hand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gochi+Hand&family=Orbitron:wght@700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;height:100%;overflow:hidden}
@@ -71,27 +71,30 @@
   .edge{position:absolute;top:0;bottom:0;right:4%;border-right:3px solid #333}
 
   /* page 3 */
-  .wiggle{animation:wig 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom}
-  .wiggle.d2{animation-delay:.4s}.wiggle.d3{animation-delay:.8s}
-  @keyframes wig{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-7deg)}86%{transform:rotate(7deg)}94%{transform:rotate(-3deg)}}
-  .stage{position:absolute;left:28%;top:52%;width:44%;height:40%}
-  .sticker{position:absolute;inset:0;display:grid;place-items:center;background:#fdfdf8}
-  .sticker svg{width:92%;height:auto;transform:scale(.6) rotate(-30deg);transition:transform .8s cubic-bezier(.3,1.6,.5,1)}
-  .opened .sticker svg{transform:scale(1) rotate(0);animation:glow 2.4s ease-in-out .8s infinite}
-  @keyframes glow{0%,100%{filter:drop-shadow(0 0 0 #fff0)}50%{filter:drop-shadow(0 0 10px #ffd84d)}}
-  .lid{position:absolute;inset:0;transform-origin:50% 100%;cursor:grab;touch-action:none;z-index:2}
-  .lid svg{width:100%;height:100%;display:block}
-  .lid .back{position:absolute;inset:0;background:repeating-linear-gradient(90deg,#f4f1e6 0 6px,#ebe6d6 6px 8px);transform:rotateX(180deg);backface-visibility:hidden}
-  .lidwrap{position:absolute;inset:0;perspective:700px;z-index:2}
-  .page svg.bow{position:absolute;left:22%;top:-22%;width:56%;pointer-events:none;z-index:3;transition:transform .9s,opacity .9s}
-  .opened svg.bow{transform:translateY(-140%) rotate(40deg);opacity:0}
-  .holeLabel{position:absolute;left:3%;top:43%;width:30%;font-family:"Gochi Hand";font-size:calc(var(--w,400px)*.075);z-index:3}
-  .pull{position:absolute;left:-20%;right:-20%;top:102%;text-align:center;font-family:"Gochi Hand";font-size:calc(var(--w,400px)*.05);color:#c0392b;animation:pulse 1.2s ease-in-out infinite}
-  .opened .pull{display:none}
+  #robot{transition:transform .9s cubic-bezier(.3,1.7,.45,1)}
+  #robotInner{transform-box:view-box;transform-origin:240px 340px}
+  .popped #robotInner{animation:boing 1.6s ease-in-out .9s infinite}
+  @keyframes boing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg) scaleY(.97)}}
+  .eyes{transform-box:fill-box;transform-origin:center;animation:blink 3.5s infinite}
+  @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  .antenna{animation:beacon .8s steps(2) infinite}
+  @keyframes beacon{50%{fill:#ffe14d}}
+  .talking .grille{animation:talk .18s steps(2) infinite}
+  @keyframes talk{50%{fill:#6ff0ff}}
+  #lid3{cursor:grab;touch-action:none;transform-box:view-box;transform-origin:240px 320px}
+  #lid3.gone{transition:transform .8s cubic-bezier(.3,.6,.4,1),opacity .8s;transform:translate(170px,-300px) rotate(60deg);opacity:0;pointer-events:none}
+  #bubble{transform-box:view-box;transform-origin:235px 145px;transform:scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+  .popped #bubble{transform:scale(1)}
+  .rtext{font-family:"Orbitron","Courier New",monospace;font-weight:700;font-size:20px;fill:#1d3f8f}
+  .hint3{font-family:"Gochi Hand";font-size:20px;fill:#c0392b;animation:pulse 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  .popped .hint3{display:none}
   @keyframes pulse{50%{transform:scale(1.08)}}
-  .yay{position:absolute;left:5%;right:5%;top:3%;background:#fdfdf8ee;border-radius:16px;padding:6px 0;text-align:center;font-family:"Gochi Hand";font-size:calc(var(--w,400px)*.08);line-height:1.1;opacity:0;transform:scale(.4);transition:all .7s cubic-bezier(.3,1.6,.5,1) .3s;z-index:4}
-  .opened .yay{opacity:1;transform:scale(1)}
-  .yay b{display:inline-block;animation:bob 1.6s ease-in-out infinite}
+  #wesArms path,#wesMouth{transition:d .4s}
+  #wes{transform-box:view-box;transform-origin:89px 555px}
+  #wes:not(.jump){animation:silly 2.4s ease-in-out infinite}
+  @keyframes silly{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+  #wes.jump{animation:jump .5s ease-in-out infinite}
+  @keyframes jump{0%,100%{transform:translateY(0)}50%{transform:translateY(-22px) rotate(3deg)}}
   canvas.fx{position:fixed;inset:0;pointer-events:none;z-index:50}
 </style>
 </head>
@@ -100,88 +103,107 @@
 
 <div class="book" id="book">
 
-  <!-- PAGE 3 (bottom of stack): presents -->
+  <!-- PAGE 3 (bottom of stack): the giant present + pop-up robot -->
   <div class="page" id="p3">
-    <svg viewBox="0 0 400 600" preserveAspectRatio="none" style="position:absolute;inset:0">
+    <svg id="p3svg" viewBox="0 0 400 600">
       <defs>
         <filter id="crayon3"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter>
+        <clipPath id="ballClip"><circle cx="240" cy="262" r="28"/></clipPath>
       </defs>
       <line x1="0" y1="0" x2="0" y2="600" stroke="#333" stroke-width="5"/>
-      <g filter="url(#crayon3)" stroke="#333" stroke-width="2.5" stroke-linejoin="round">
-        <!-- small tilted red/green present -->
-        <g class="wiggle" ><g transform="rotate(28 120 165)">
-          <rect x="88" y="140" width="66" height="50" rx="4" fill="#e85a5a"/>
-          <rect x="114" y="140" width="14" height="50" fill="#8fd15a" stroke="none"/>
-          <path d="M112 140c-10-22-24-12-14 0M124 140c6-22 22-14 12 0" fill="none" stroke="#c0392b" stroke-width="4"/>
-        </g></g>
-        <!-- big blue present top right -->
-        <g class="wiggle d2">
-          <rect x="235" y="85" width="130" height="115" fill="#a9d8ef"/>
-          <rect x="290" y="85" width="20" height="115" fill="#8fd15a" stroke="none"/>
-          <rect x="235" y="132" width="130" height="16" fill="#8fd15a" stroke="none"/>
-          <path d="M298 85c-30-50-75-25-40 0M302 85c30-50 75-25 40 0" fill="none" stroke="#5560c4" stroke-width="6"/>
+      <!-- floor -->
+      <rect x="0" y="555" width="400" height="45" fill="#f1e3c6"/>
+      <path d="M0 555h400" stroke="#333" stroke-width="2.5"/>
+      <path d="M60 568h60M300 566h70" stroke="#d8c39a" stroke-width="3"/>
+
+      <!-- inside of the box (dark opening) -->
+      <rect x="152" y="328" width="176" height="12" fill="#4f8a2e" stroke="#333" stroke-width="2"/>
+
+      <!-- ROBOT (hidden inside the box until the lid comes off) -->
+      <g id="robot" style="transform:translateY(215px)">
+       <g id="robotInner">
+        <path d="M240 342l-16-5 32-6-32-6 32-6-32-6 32-6-16-5" fill="none" stroke="#777" stroke-width="5" stroke-linejoin="round"/>
+        <g stroke="#333" stroke-width="2.5" stroke-linejoin="round">
+          <path d="M240 158v-12" stroke-width="3"/>
+          <circle class="antenna" cx="240" cy="140" r="7" fill="#e8413c"/>
+          <rect x="198" y="174" width="8" height="16" rx="2" fill="#7d8aa3"/>
+          <rect x="274" y="174" width="8" height="16" rx="2" fill="#7d8aa3"/>
+          <rect x="205" y="158" width="70" height="50" rx="9" fill="#b8c4d6"/>
+          <g class="eyes"><circle cx="223" cy="179" r="9" fill="#fff"/><circle cx="257" cy="179" r="9" fill="#fff"/>
+            <circle cx="224" cy="180" r="4" fill="#2f8be0" stroke="none"/><circle cx="258" cy="180" r="4" fill="#2f8be0" stroke="none"/></g>
+          <rect class="grille" x="222" y="194" width="36" height="8" rx="2" fill="#555"/>
+          <rect x="232" y="208" width="16" height="9" fill="#7d8aa3"/>
+          <rect x="195" y="216" width="90" height="80" rx="9" fill="#9aa8bf"/>
+          <circle cx="212" cy="230" r="4" fill="#4cbf4a"/><circle cx="268" cy="230" r="4" fill="#f7d333"/>
+          <path d="M195 232L176 258L210 268M285 232L304 258L270 268" fill="none" stroke="#7d8aa3" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
         </g>
-        <!-- small blue present -->
-        <g class="wiggle d3">
-          <rect x="285" y="245" width="62" height="70" fill="#a9d8ef"/>
-          <path d="M316 245v70M285 280h62" stroke="#5560c4" stroke-width="4"/>
-          <path d="M314 245c-12-30-30-15-14 0M318 245c12-30 30-15 14 0" fill="none" stroke="#f0a030" stroke-width="4"/>
+        <!-- rainbow basketball -->
+        <g clip-path="url(#ballClip)">
+          <rect x="210" y="232" width="60" height="9" fill="#e8413c"/><rect x="210" y="241" width="60" height="8" fill="#f68b28"/>
+          <rect x="210" y="249" width="60" height="8" fill="#f7d333"/><rect x="210" y="257" width="60" height="9" fill="#4cbf4a"/>
+          <rect x="210" y="266" width="60" height="8" fill="#2f8be0"/><rect x="210" y="274" width="60" height="8" fill="#5a46b8"/>
+          <rect x="210" y="282" width="60" height="10" fill="#b04ac0"/>
+          <path d="M240 232v60M212 262h56M222 238c9 10 9 38 0 48M258 238c-9 10-9 38 0 48" fill="none" stroke="#222" stroke-width="2.5"/>
         </g>
+        <circle cx="240" cy="262" r="28" fill="none" stroke="#222" stroke-width="3"/>
+        <circle cx="210" cy="268" r="6" fill="#7d8aa3" stroke="#333" stroke-width="2"/>
+        <circle cx="270" cy="268" r="6" fill="#7d8aa3" stroke="#333" stroke-width="2"/>
+       </g>
       </g>
-      <path d="M95 300c25-25 60-28 85-8" fill="none" stroke="#333" stroke-width="2.5"/>
-      <path d="M170 284l12 10-15 4" fill="none" stroke="#333" stroke-width="2.5"/>
+
+      <!-- box front -->
+      <g filter="url(#crayon3)" stroke="#333" stroke-width="2.5">
+        <rect x="150" y="336" width="180" height="219" fill="#8fd15a"/>
+        <g stroke="#6fbf3a" stroke-width="3" opacity=".6"><path d="M160 360h50M162 380h45M165 480v60M190 470v70M290 360v50M310 365v50M285 480v65M305 475v70"/></g>
+        <rect x="225" y="336" width="30" height="219" fill="#e8742c"/>
+        <rect x="150" y="428" width="180" height="28" fill="#e8742c"/>
+      </g>
+
+      <!-- lid (pull it off!) -->
+      <g id="lid3">
+        <rect x="140" y="306" width="200" height="32" fill="#8fd15a" stroke="#333" stroke-width="2.5"/>
+        <rect x="225" y="306" width="30" height="32" fill="#e8742c" stroke="#333" stroke-width="2"/>
+        <path d="M238 306c-50-55-90-20-40 0M242 306c50-55 90-20 40 0" fill="#8fd15a" stroke="#4a8a2a" stroke-width="5"/>
+        <rect x="120" y="230" width="240" height="120" fill="transparent"/>
+      </g>
+
+      <!-- Wesley, as tall as the present -->
+      <g id="wes" stroke="#333" stroke-width="2.2" stroke-linejoin="round">
+        <path d="M78 478l-4 70M100 478l4 70" stroke="#2d3e66" stroke-width="10" stroke-linecap="round"/>
+        <ellipse cx="72" cy="551" rx="13" ry="7" fill="#e8413c"/><ellipse cx="106" cy="551" rx="13" ry="7" fill="#e8413c"/>
+        <g id="wesArms" fill="none" stroke="#c98a5a" stroke-width="8" stroke-linecap="round">
+          <path id="wesArmL" d="M68 402L52 455"/>
+          <path id="wesArmR" d="M108 402L142 336"/>
+        </g>
+        <path d="M66 394h46l6 88H60z" fill="#2f8be0"/>
+        <text x="89" y="452" text-anchor="middle" font-family="Patrick Hand" font-size="34" fill="#fff" stroke="none">7</text>
+        <circle cx="89" cy="364" r="27" fill="#d9a06c"/>
+        <path d="M60 366Q60 334 89 334Q118 334 118 366L114 352L108 357L102 351L96 357L90 351L84 357L78 351L72 357L66 351z" fill="#7a4a26"/>
+        <path d="M72 340v10M82 337v12M92 337v12M102 339v10" stroke="#5a3418" stroke-width="1.6"/>
+        <path d="M70 342l19-48 19 48z" fill="#ff6fb5"/><circle cx="89" cy="292" r="5" fill="#f7d333"/>
+        <path d="M76 330h26M80 318h18" stroke="#f7d333" stroke-width="3"/>
+        <path d="M74 357q5-5 10-1M94 354q5-3 10 2" fill="none" stroke-width="2"/>
+        <circle cx="80" cy="364" r="4.5" fill="#fff" stroke-width="1.5"/><circle cx="98" cy="364" r="4.5" fill="#fff" stroke-width="1.5"/>
+        <circle id="pupL" cx="82" cy="365" r="2.2" fill="#333" stroke="none"/><circle id="pupR" cx="96" cy="365" r="2.2" fill="#333" stroke="none"/>
+        <path id="wesMouth" d="M79 374q10 9 20 0" fill="none"/>
+        <path id="tongue" d="M90 378q0 9 5 9t5-9z" fill="#f08a9a" stroke-width="1.5"/>
+      </g>
+
+      <!-- speech bubble -->
+      <g id="bubble">
+        <rect x="14" y="10" width="372" height="122" rx="18" fill="#fff" stroke="#333" stroke-width="3"/>
+        <path d="M218 130l18 16 2-16" fill="#fff" stroke="#333" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M220 129h16" stroke="#fff" stroke-width="5"/>
+        <text class="rtext" text-anchor="middle">
+          <tspan x="200" y="40"  class="rl"></tspan>
+          <tspan x="200" y="66"  class="rl"></tspan>
+          <tspan x="200" y="92"  class="rl"></tspan>
+          <tspan x="200" y="118" class="rl" style="fill:#e8413c"></tspan>
+        </text>
+      </g>
+
+      <text class="hint3" x="200" y="590" text-anchor="middle">👆 pull the lid off the big present!</text>
     </svg>
-
-    <div class="holeLabel" style="top:43%">Hole</div>
-
-    <div class="stage" id="stage">
-      <!-- the hidden sticker -->
-      <div class="sticker">
-        <svg viewBox="0 0 200 200">
-          <defs>
-            <clipPath id="ballClip"><circle cx="100" cy="100" r="86"/></clipPath>
-          </defs>
-          <circle cx="100" cy="100" r="96" fill="#fff" stroke="#ddd" stroke-width="2"/>
-          <g clip-path="url(#ballClip)">
-            <rect x="0" y="0"   width="200" height="30" fill="#e8413c"/>
-            <rect x="0" y="30"  width="200" height="29" fill="#f68b28"/>
-            <rect x="0" y="59"  width="200" height="28" fill="#f7d333"/>
-            <rect x="0" y="87"  width="200" height="28" fill="#4cbf4a"/>
-            <rect x="0" y="115" width="200" height="28" fill="#2f8be0"/>
-            <rect x="0" y="143" width="200" height="28" fill="#5a46b8"/>
-            <rect x="0" y="171" width="200" height="30" fill="#b04ac0"/>
-            <g fill="none" stroke="#222" stroke-width="5">
-              <path d="M100 14v172M14 100h172"/>
-              <path d="M40 34c28 30 28 102 0 132"/>
-              <path d="M160 34c-28 30-28 102 0 132"/>
-            </g>
-            <ellipse cx="70" cy="60" rx="22" ry="12" fill="#fff" opacity=".35" transform="rotate(-30 70 60)"/>
-          </g>
-          <circle cx="100" cy="100" r="86" fill="none" stroke="#222" stroke-width="5"/>
-        </svg>
-      </div>
-      <!-- bow sits on top -->
-      <svg class="bow" viewBox="0 0 100 60"><path d="M48 58C20 50 8 8 30 6s22 30 18 52M52 58C80 50 92 8 70 6S48 36 52 58" fill="#8fd15a" stroke="#4a8a2a" stroke-width="5"/></svg>
-      <!-- the flap you tear back -->
-      <div class="lidwrap"><div class="lid" id="lid">
-        <svg viewBox="0 0 200 200" preserveAspectRatio="none">
-          <filter id="crayonL"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.5"/></filter>
-          <g filter="url(#crayonL)">
-            <rect x="2" y="2" width="196" height="196" fill="#8fd15a" stroke="#c9e9b0" stroke-width="3"/>
-            <g stroke="#6fbf3a" stroke-width="3" opacity=".6">
-              <path d="M10 20h60M12 40h55M10 140v50M30 130v60M150 20v60M170 25v60M140 140v55M165 135v60"/>
-            </g>
-            <rect x="80" y="0" width="40" height="200" fill="#e8742c"/>
-            <rect x="0" y="90" width="200" height="30" fill="#e8742c"/>
-            <path d="M88 10v180M100 0v200M112 10v180" stroke="#c95a1a" stroke-width="2" opacity=".6"/>
-          </g>
-        </svg>
-        <div class="back"></div>
-      </div></div>
-      <div class="pull">👆 drag down (or tap) to tear it open!</div>
-    </div>
-
-    <div class="yay">🎉 <b>Happy 7th Birthday,</b><br><b style="color:#2f8be0">Wesley!</b> 🏀<br><span style="font-size:.6em">a rainbow basketball sticker — from Miles</span></div>
   </div>
 
   <!-- PAGE 2: the message -->
@@ -499,30 +521,60 @@
   let hello = false;
   document.getElementById("cover").addEventListener("pointerdown", e => { if (!hello) { hello = true; burst(e.clientX, e.clientY, 25, 5); } });
 
-  // ---------- tear-open present ----------
-  const lid = document.getElementById("lid"), stage = document.getElementById("stage");
-  let dragging = false, startY = 0, prog = 0, opened = false, moved = false;
-  const setLid = p => lid.style.transform = `rotateX(${-p * 175}deg)`;
-  function open() {
-    if (opened) return; opened = true;
-    lid.style.transition = "transform .6s cubic-bezier(.3,1.4,.5,1)"; setLid(1);
-    p3.classList.add("opened"); tone(180, .2, "sawtooth", .05, .5); tada();
-    const r = stage.getBoundingClientRect();
-    setTimeout(() => { burst(r.left + r.width / 2, r.top + r.height / 2, 120, 11); }, 250);
-    setTimeout(() => { burst(r.left, r.top, 50, 8); burst(r.right, r.top, 50, 8); }, 900);
+  // ---------- giant present + robot ----------
+  const LINES = ["HAP-PY BIRTH-DAY,", "WES-LEY! HERE-IS-YOUR", "PRES-ENT FROM MI-LES.", "BEEP-BOP-BOOP!"];
+  const lid3 = document.getElementById("lid3"), svg3 = document.getElementById("p3svg");
+  const tsp = [...document.querySelectorAll(".rl")];
+  let opened3 = false, drag3 = false, sy = 0, lift = 0, moved3 = false, talkTimer;
+  const unit = () => 600 / svg3.getBoundingClientRect().height;   // screen px -> svg units
+
+  function beeps() { [880, 660, 990].forEach((f, i) => setTimeout(() => tone(f, .18, "square", .07), i * 220)); }
+  function speak() {
+    try {
+      const say = new SpeechSynthesisUtterance("Hap py. Birth day. Wes ley. Here is your pres ent from Miles.");
+      say.pitch = .1; say.rate = .75;
+      const v = speechSynthesis.getVoices().find(v => /en/i.test(v.lang)); if (v) say.voice = v;
+      say.onend = beeps; speechSynthesis.cancel(); speechSynthesis.speak(say);
+    } catch (e) { beeps(); }
   }
-  lid.addEventListener("pointerdown", e => { if (opened) return; dragging = true; moved = false; startY = e.clientY; lid.style.transition = "none"; lid.setPointerCapture(e.pointerId); });
-  lid.addEventListener("pointermove", e => {
-    if (!dragging) return;
-    const dy = e.clientY - startY; if (Math.abs(dy) > 6) moved = true;
-    prog = Math.max(0, Math.min(1, dy / (stage.offsetHeight * 1.1))); setLid(prog);
-    if (Math.random() < .3 && dy > 0) tone(120 + Math.random() * 80, .05, "sawtooth", .02);
+  function typeOut() {
+    clearInterval(talkTimer); tsp.forEach(t => t.textContent = "");
+    p3.classList.add("talking");
+    let li = 0, ci2 = 0;
+    talkTimer = setInterval(() => {
+      if (li >= LINES.length) { clearInterval(talkTimer); setTimeout(() => p3.classList.remove("talking"), 1200); return; }
+      tsp[li].textContent = LINES[li].slice(0, ++ci2);
+      if (ci2 % 2) tone(500 + Math.random() * 500, .04, "square", .025);
+      if (ci2 >= LINES[li].length) { li++; ci2 = 0; }
+    }, 70);
+  }
+  function popRobot() {
+    if (opened3) return; opened3 = true;
+    lid3.style.transform = ""; lid3.classList.add("gone");
+    tone(200, .5, "sine", .12, 4);                       // boing!
+    document.getElementById("robot").style.transform = "translateY(0)";
+    p3.classList.add("popped");
+    wesArmL.setAttribute("d", "M68 402L50 336"); wesArmR.setAttribute("d", "M108 402L128 336");
+    wesMouth.setAttribute("d", "M79 372q10 16 20 0z"); wesMouth.setAttribute("fill", "#a33"); tongue.style.display = "none";
+    pupL.setAttribute("cx", 80); pupR.setAttribute("cx", 98); pupL.setAttribute("cy", 363); pupR.setAttribute("cy", 363);
+    setTimeout(() => wes.classList.add("jump"), 300);
+    const r = svg3.getBoundingClientRect();
+    setTimeout(() => { burst(r.left + r.width * .6, r.top + r.height * .45, 120, 11); tada(); }, 450);
+    setTimeout(() => { burst(r.left + 20, r.top + 40, 50, 8); burst(r.right - 20, r.top + 40, 50, 8); }, 1100);
+    setTimeout(() => { typeOut(); speak(); }, 800);
+  }
+  lid3.addEventListener("pointerdown", e => { if (opened3) return; drag3 = true; moved3 = false; sy = e.clientY; lid3.setPointerCapture(e.pointerId); });
+  lid3.addEventListener("pointermove", e => {
+    if (!drag3) return;
+    const dy = (sy - e.clientY) * unit(); if (Math.abs(dy) > 5) moved3 = true;
+    lift = Math.max(0, dy); lid3.style.transform = `translate(0px, ${-lift}px) rotate(${-lift / 8}deg)`;
+    if (lift > 70) { drag3 = false; popRobot(); }
   });
-  const end = () => {
-    if (!dragging) return; dragging = false;
-    if (!moved || prog > .35) open(); else { lid.style.transition = "transform .4s"; setLid(0); }
-  };
-  lid.addEventListener("pointerup", end); lid.addEventListener("pointercancel", end);
+  const end3 = () => { if (!drag3) return; drag3 = false; if (!moved3 || lift > 35) popRobot(); else lid3.style.transform = ""; };
+  lid3.addEventListener("pointerup", end3); lid3.addEventListener("pointercancel", end3);
+  // tap the robot to hear it again
+  document.getElementById("robot").addEventListener("pointerdown", () => { if (opened3) { typeOut(); speak(); } });
+  try { speechSynthesis.getVoices(); } catch (e) {}
 })();
 </script>
 </body>
