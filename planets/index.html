@@ -360,8 +360,8 @@ function body(ctx,x,y,r,b,rot){
   const g=ctx.createRadialGradient(-r*.45,-r*.45,r*.1,-r*.2,-r*.2,r*1.55);
   g.addColorStop(0,'rgba(255,255,255,.22)');g.addColorStop(.45,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(2,3,20,.72)');
   ctx.fillStyle=g;ctx.fillRect(-r,-r,2*r,2*r);
-  const gs=[];
-  if(b.glow){const on=RAD.a,[R,G,B]=b.glowC||[255,253,240];
+  const gs=[],gc=()=>{const c=b.glowC||[255,253,240];return c.map((v,i)=>Math.round(v+(NUKE[i]-v)*RAD.a));};
+  if(b.glow){const on=RAD.a,[R,G,B]=gc();
     b.glow.forEach((p,i)=>{const q=proj(p.lon,p.lat,rot);if(q[2]<.05)return;
       const th=Math.pow(.5+.5*Math.sin(sim*3.2+i*1.9),2),str=b.glowAlways?.55+.45*on:on;if(str<.01)return;
       const al=Math.min(1,(.55+.45*th)*str);gs.push([q,p,th*str]);
@@ -369,11 +369,11 @@ function body(ctx,x,y,r,b,rot){
       shape(ctx,p.pts.map(([dl,db])=>{const z=proj(p.lon+dl,Math.max(-89,Math.min(89,p.lat+db)),rot);return[z[0]*r,z[1]*r];}));
       ctx.fillStyle=`rgba(${R},${G},${B},${al})`;ctx.fill();
       if(on>.01){ctx.save();ctx.globalCompositeOperation='lighter';ctx.shadowBlur=0;const cr=p.size*D*r*(.6+.5*th),cg=ctx.createRadialGradient(q[0]*r,q[1]*r,0,q[0]*r,q[1]*r,cr);
-        cg.addColorStop(0,`rgba(255,255,255,${.9*th*on})`);cg.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(q[0]*r,q[1]*r,cr,0,7);ctx.fill();ctx.restore();}
+        cg.addColorStop(0,`rgba(220,255,170,${.9*th*on})`);cg.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=cg;ctx.beginPath();ctx.arc(q[0]*r,q[1]*r,cr,0,7);ctx.fill();ctx.restore();}
       if(p.dot){ctx.shadowBlur=0;ctx.fillStyle='rgba(105,100,92,.85)';ctx.beginPath();ctx.arc(q[0]*r,q[1]*r,Math.max(.7,r*.022),0,7);ctx.fill();}});ctx.shadowBlur=0;}
   ctx.restore();
   if(b.outline){ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.lineWidth=Math.max(1,r*.03);ctx.strokeStyle=b.outline;ctx.stroke();}
-  if(gs.length&&RAD.a>.01){const[R,G,B]=b.glowC||[255,253,240];ctx.save();ctx.globalCompositeOperation='lighter';
+  if(gs.length&&RAD.a>.01){const[R,G,B]=gc();ctx.save();ctx.globalCompositeOperation='lighter';
     gs.forEach(([q,p,k])=>{const px=x+q[0]*r,py=y+q[1]*r,br=Math.max(1.5+2.5*k,p.size*D*r*(1.3+1.4*k));const g=ctx.createRadialGradient(px,py,0,px,py,br);
       g.addColorStop(0,`rgba(${R},${G},${B},${.6*k*RAD.a*Math.max(.3,q[2])})`);g.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,br,0,7);ctx.fill();});ctx.restore();}
 }
@@ -413,8 +413,9 @@ Object.assign(jamie,{name:'55 Flizza',title:'The 55 Flizza family',by:'by Jamie 
 Object.assign(miles,{name:'95 Cinna'});jamie.sun.rc=[140,190,255];miles.sun.rc=[255,110,80];
 /* radiation glow: every warm planet gives off a little (infrared); these give off lots */
 const RADDEF={c:[255,90,70],k:.22},RAD={on:false,a:0};
+const NUKE=[120,255,40];/* glowing nuclear-goo green */
 const spots=(P,c,n)=>{P.planet.glowC=c;P.planet.glow=Array.from({length:n},(_,i)=>{const z=6+rnd()*5;return{...blob(i*360/n+rnd()*20,(rnd()*2-1)*58,z,'#fff'),size:z};});};
-spots(J1,[255,190,110],9);spots(J4,[150,255,220],8);spots(M1,[255,170,225],8);spots(M3,[255,235,150],8);
+spots(J1,NUKE,9);spots(J4,NUKE,8);
 function radHalo(ctx,x,y,r,rd){const[R,G,B]=rd.c,k=rd.k*RAD.a,p=1+.08*Math.sin(sim*3+x*.01),E=r*(1.5+rd.k*1.5)*p;
   ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,r*.85,x,y,E);
   g.addColorStop(0,`rgba(${R},${G},${B},${.45*k})`);g.addColorStop(1,`rgba(${R},${G},${B},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,E,0,7);ctx.fill();
@@ -1163,7 +1164,7 @@ GAL.cv.onclick=e=>{const r=GAL.cv.getBoundingClientRect(),x=e.clientX-r.left,y=e
 GAL.cv.style.cursor='pointer';
 const radBtn=document.getElementById('rad'),toast=document.getElementById('toast');let toastT;
 radBtn.onclick=()=>{RAD.on=!RAD.on;radBtn.setAttribute('aria-pressed',String(RAD.on));if(!playing)setPlay(true);clearTimeout(toastT);
-  if(RAD.on){toast.innerHTML='<b>Radiation vision!</b> Stars give off the most radiation by far, so the suns blaze. The radiation planets have hot spots on them that pulse and glow, like a nuclear reactor.';
+  if(RAD.on){toast.innerHTML='<b>Radiation vision!</b> Stars give off the most radiation by far, so the suns blaze. Jamie’s radiation planets have hot spots that pulse a glowing nuclear green.';
     toast.classList.add('on');toastT=setTimeout(()=>toast.classList.remove('on'),7000);}else toast.classList.remove('on');};
 function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;clock+=dt;if(playing)sim+=dt*speed;RAD.a+=((RAD.on?1:0)-RAD.a)*Math.min(1,dt*3);
   if(gEl.hidden){stages.forEach(st=>draw(st,dt));drawGalaxy();}else game(dt);requestAnimationFrame(frame);}
