@@ -86,7 +86,8 @@
   #bubble{transform-box:view-box;transform-origin:235px 145px;transform:scale(0);transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
   .popped #bubble{transform:scale(1)}
   .rtext{font-family:"Orbitron","Courier New",monospace;font-weight:700;font-size:20px;fill:#1d3f8f}
-  .hint3{font-family:"Gochi Hand";font-size:20px;fill:#c0392b}
+  .hint3{font-family:"Gochi Hand";font-size:19px;fill:#c0392b}
+  #robotBall,#ball3,#p3svg{touch-action:none}
   .popped .hint3{display:none}
   .popped.done .hint3,.popped.waitball .hint3{display:inline}
   #robotBall,#ball3{cursor:pointer}
@@ -210,7 +211,8 @@
         </text>
       </g>
 
-      <text class="hint3" x="200" y="590" text-anchor="middle">👆 pull the lid off the big present!</text>
+      <text class="hint3" id="hintA" x="200" y="588" text-anchor="middle">👆 Remove the lid of the present!</text>
+      <text class="hint3" id="hintB" x="200" y="595" text-anchor="middle"></text>
     </svg>
   </div>
 
@@ -541,7 +543,9 @@
   // ---------- giant present + robot ----------
   const LINES = ["HAP-PY BIRTH-DAY,", "WES-LEY! HERE-IS-YOUR", "PRES-ENT FROM MI-LES.", "BEEP-BOP-BOOP!"];
   const lid3 = document.getElementById("lid3"), svg3 = document.getElementById("p3svg");
-  const robot = document.getElementById("robot"), hint3 = document.querySelector(".hint3");
+  const robot = document.getElementById("robot"), hint3 = document.getElementById("hintA");
+  function setHint(a, b = "") { hintA.textContent = a; hintB.textContent = b; hintA.setAttribute("y", b ? 574 : 588); }
+  const PLAY_HINT = ["👆 Tap the basketball to pass it!", "Or slide your finger to shoot the basketball!"];
   const tsp = [...document.querySelectorAll(".rl")];
   let state = "closed", drag3 = false, sy = 0, lift = 0, moved3 = false, talkTimer, runId = 0;
   const unit = () => 600 / svg3.getBoundingClientRect().height;
@@ -597,13 +601,10 @@
     const r = svg3.getBoundingClientRect();
     setTimeout(() => { burst(r.left + r.width * .6, r.top + r.height * .45, 110, 11); tada(); }, 450);
     let spoke; const spoken = new Promise(res => spoke = res);
+    // they can start playing catch right away
+    owner = "robot"; state = "play"; setHint(...PLAY_HINT); p3.classList.add("waitball");
     say("Hap-py, birth-day, Wes-ley! Here, is, your, pres-ent, from Mi-les. Beep. Bop. Boop.", () => { beeps(); spoke(); });
-    await Promise.all([typeOut(LINES), spoken]); if (id !== runId) return;
-    await wait(500); if (id !== runId) return;
-    // now they play catch: tap the basketball to pass it
-    owner = "robot"; state = "play";
-    hint3.textContent = "👆 Tap the basketball to pass it!";
-    p3.classList.add("waitball");
+    await Promise.all([typeOut(LINES), spoken]);
   }
 
   let owner = "robot", idle;
@@ -651,12 +652,63 @@
     robot.style.transition = "transform .7s cubic-bezier(.6,-.3,.8,.5)"; robot.style.transform = "translateY(215px)";
     tone(900, .5, "sine", .1, .2);
     await wait(800);
-    hint3.textContent = "👆 Tap the present to see the robot again!";
+    setHint("👆 Tap the present to see the robot again!");
     p3.classList.add("popped", "done");
     state = "done";
   }
-  robotBall.addEventListener("pointerdown", e => { e.stopPropagation(); robotPass(); });
-  ball3.addEventListener("pointerdown", e => { e.stopPropagation(); wesPass(); });
+  // ---- tap = pass, slide = shoot ----
+  let swipe = null, pos = { x: 240, y: 262 };
+  function ballDown(e, who) {
+    e.stopPropagation(); e.preventDefault();
+    if (state !== "play" || owner !== who) return;
+    swipe = { x: e.clientX, y: e.clientY, who };
+    try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+  }
+  robotBall.addEventListener("pointerdown", e => ballDown(e, "robot"));
+  ball3.addEventListener("pointerdown", e => ballDown(e, "wes"));
+  window.addEventListener("pointerup", e => {
+    if (!swipe) return; const sw = swipe; swipe = null;
+    const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+    if (Math.hypot(dx, dy) > 25) shoot(sw.who, dx, dy);
+    else sw.who === "robot" ? robotPass() : wesPass();
+  });
+  window.addEventListener("pointercancel", () => swipe = null);
+
+  async function shoot(who, dx, dy) {
+    if (state !== "play" || owner !== who) return;
+    state = "shooting"; clearTimeout(idle); p3.classList.add("still"); p3.classList.remove("waitball");
+    let x, y, k;
+    if (who === "robot") { x = 240; y = 262; k = 1; robotBall.style.display = "none"; }
+    else { x = 90; y = 440; k = .8; wes.classList.remove("jump"); wesPose("M68 402L50 336", "M108 402L128 336"); }
+    svg3.insertBefore(ball3, lid3); ball3.style.display = ""; ballAt(x, y, 0, k);
+    const len = Math.hypot(dx, dy), sp = 16;
+    let vx = dx / len * sp, vy = dy / len * sp, rot = 0;
+    tone(250, .4, "triangle", .08, 3);                      // whoosh
+    owner = "away";
+    await new Promise(res => {
+      (function f() {
+        vy += .25; x += vx; y += vy; rot += vx * 2;
+        if (y > 552 - 28 * k && vy > 0) { y = 552 - 28 * k; vy = -vy * .7; thump(); }   // bounce off the floor
+        ballAt(x, y, rot, k);
+        if (x < -80 || x > 480 || y < -120) return res();
+        requestAnimationFrame(f);
+      })();
+    });
+    ball3.style.display = "none";
+    setHint("🏀 Whoa! Somebody will pass it back...");
+    p3.classList.add("waitball");
+    if (who === "wes") wes.classList.add("jump");
+    await wait(5000);
+    // the ball comes bouncing back in from the right side
+    setHint("Here it comes!");
+    ball3.style.display = ""; svg3.insertBefore(ball3, lid3);
+    await animate(600, t => ballAt(bez(470, 420, 362, t), bez(300, 330, 524, t), -t * 200, 1)); thump();
+    await animate(650, t => ballAt(bez(362, 340, 240, t), bez(524, 150, 262, t), -200 - t * 200, 1));
+    thump(); tone(880, .12, "square", .06);
+    ball3.style.display = "none"; robotBall.style.display = "";
+    owner = "robot"; state = "play"; p3.classList.remove("still");
+    setHint(...PLAY_HINT);
+  }
 
   function openLid() {
     if (state !== "closed") return;
