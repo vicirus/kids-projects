@@ -88,7 +88,9 @@
   .rtext{font-family:"Orbitron","Courier New",monospace;font-weight:700;font-size:20px;fill:#1d3f8f}
   .hint3{font-family:"Gochi Hand";font-size:20px;fill:#c0392b}
   .popped .hint3{display:none}
-  .popped.done .hint3{display:inline}
+  .popped.done .hint3,.popped.waitball .hint3{display:inline}
+  #robotBall,#ball3{cursor:pointer}
+  .waitball #robotBall,.waitball #ball3{filter:drop-shadow(0 0 8px #ffd84d)}
   .done #bubble{transform:scale(0)}
   .still #robotInner{animation:none!important}
   @keyframes pulse{50%{transform:scale(1.08)}}
@@ -581,7 +583,7 @@
 
   async function show() {
     const id = ++runId; state = "busy";
-    p3.classList.remove("done"); p3.classList.add("popped", "still");
+    clearTimeout(idle); p3.classList.remove("done", "waitball"); p3.classList.add("popped", "still");
     // put the ball back with the robot
     svg3.insertBefore(ball3, lid3); ball3.style.display = "none"; robotBall.style.display = "";
     wes.classList.remove("jump");
@@ -597,40 +599,64 @@
     let spoke; const spoken = new Promise(res => spoke = res);
     say("Hap-py, birth-day, Wes-ley! Here, is, your, pres-ent, from Mi-les. Beep. Bop. Boop.", () => { beeps(); spoke(); });
     await Promise.all([typeOut(LINES), spoken]); if (id !== runId) return;
-    await wait(600); if (id !== runId) return;
+    await wait(500); if (id !== runId) return;
+    // now they play catch: tap the basketball to pass it
+    owner = "robot"; state = "play";
+    hint3.textContent = "👆 Tap the basketball to pass it!";
+    p3.classList.add("waitball");
+  }
 
-    // dribble three times on top of the box
-    robotBall.style.display = "none"; ball3.style.display = ""; ballAt(240, 262);
-    for (let i = 0; i < 3; i++) {
-      await animate(340, t => { ballAt(240, 262 + 44 * Math.sin(Math.PI * t), 0, 1); if (Math.abs(t - .5) < .03) {} });
-      thump(); if (id !== runId) return;
-    }
-    // bounce pass to Wesley
+  let owner = "robot", idle;
+  const R = () => svg3.getBoundingClientRect();
+  async function robotPass() {
+    if (state !== "play" || owner !== "robot") return;
+    state = "passing"; clearTimeout(idle); p3.classList.add("still");
+    robotBall.style.display = "none"; svg3.insertBefore(ball3, lid3); ball3.style.display = ""; ballAt(240, 262);
+    for (let i = 0; i < 2; i++) { await animate(320, t => ballAt(240, 262 + 44 * Math.sin(Math.PI * t))); thump(); }
     wes.classList.remove("jump");
-    wesPose("M68 402L56 432", "M108 402L122 432");          // hands out, ready to catch
-    await animate(650, t => ballAt(bez(240, 200, 142, t), bez(262, 120, 530, t), -t * 300, 1 - .2 * t));
-    thump();
+    wesPose("M68 402L56 432", "M108 402L122 432");
+    await animate(650, t => ballAt(bez(240, 200, 142, t), bez(262, 120, 530, t), -t * 300, 1 - .2 * t)); thump();
     await animate(520, t => ballAt(bez(142, 112, 90, t), bez(530, 360, 440, t), -300 - t * 200, .8));
-    thump(); tone(660, .12, "triangle", .1); if (id !== runId) return;
-    wesPose("M68 402L67 440", "M108 402L112 440");          // got it!
-    wes.appendChild(ball3); ballAt(90, 440, -500, .8);
-    wes.appendChild(wesArms);                                // arms in front of the ball
-    burst(r.left + r.width * .22, r.top + r.height * .72, 40, 7);
-    await wait(500); wes.classList.add("jump");
-
-    // robot says beep boop and goes back in the box
+    thump(); tone(660, .12, "triangle", .1);
+    wesPose("M68 402L67 440", "M108 402L112 440");
+    wes.appendChild(ball3); ballAt(90, 440, -500, .8); wes.appendChild(wesArms);
+    const r = R(); burst(r.left + r.width * .22, r.top + r.height * .72, 40, 7);
+    owner = "wes"; state = "play"; p3.classList.remove("still");
+    setTimeout(() => { if (owner === "wes") wes.classList.add("jump"); }, 400);
+    idle = setTimeout(goHome, 8000);                       // nobody passed back for a while: robot says bye
+  }
+  async function wesPass() {
+    if (state !== "play" || owner !== "wes") return;
+    state = "passing"; clearTimeout(idle); wes.classList.remove("jump"); p3.classList.add("still");
+    await wait(30);
+    svg3.insertBefore(ball3, lid3); ballAt(90, 440, 0, .8);
+    wesPose("M68 402L84 414", "M108 402L124 400");          // push pass
+    tone(400, .1, "triangle", .08);
+    await animate(480, t => ballAt(bez(90, 115, 142, t), bez(440, 380, 530, t), t * 200, .8)); thump();
+    wesPose("M68 402L50 336", "M108 402L128 336");
+    await animate(650, t => ballAt(bez(142, 200, 240, t), bez(530, 120, 262, t), 200 + t * 160, .8 + .2 * t));
+    thump(); tone(880, .12, "square", .06);
+    ball3.style.display = "none"; robotBall.style.display = "";
+    owner = "robot"; state = "play";
+    wes.classList.add("jump");
+  }
+  async function goHome() {
+    if (state !== "play" || owner !== "wes") return;
+    state = "busy"; p3.classList.remove("waitball");
     tsp.forEach(t => t.textContent = ""); tsp[1].textContent = "BEEP-BOOP!";
     p3.classList.add("talking");
     say("Beep. Boop.", () => {}); beeps([990, 520]);
-    await wait(1400); if (id !== runId) return;
+    await wait(1400);
     p3.classList.remove("talking", "popped");
     robot.style.transition = "transform .7s cubic-bezier(.6,-.3,.8,.5)"; robot.style.transform = "translateY(215px)";
     tone(900, .5, "sine", .1, .2);
     await wait(800);
-    hint3.textContent = "👆 tap the present to see the robot again!";
+    hint3.textContent = "👆 Tap the present to see the robot again!";
     p3.classList.add("popped", "done");
     state = "done";
   }
+  robotBall.addEventListener("pointerdown", e => { e.stopPropagation(); robotPass(); });
+  ball3.addEventListener("pointerdown", e => { e.stopPropagation(); wesPass(); });
 
   function openLid() {
     if (state !== "closed") return;
