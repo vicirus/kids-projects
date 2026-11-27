@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Miles's Giant House</title>
+<title>Jamie's Looping Castle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -35,11 +35,11 @@ button[aria-pressed=true]{background:var(--gold);color:#1a1408;border-color:var(
 #toot{background:#b3122a;border-color:#d8324a;color:#fff}
 .note{max-width:1240px;margin:0 auto;padding:4px max(4vw,16px) 30px;font-size:14px;opacity:.6}
 </style></head><body>
-<header><a href="../" style="color:#9fb0ff;text-decoration:none;font-size:15px">&larr; Friend &amp; Family</a><h1>Miles's Giant House</h1><p>Miles's tile house and Jamie's castle, joined by the red bridge on a snowy night.</p></header>
+<header><a href="../" style="color:#9fb0ff;text-decoration:none;font-size:15px">&larr; Kids' Projects</a><h1>Jamie's Looping Castle</h1><p>A snowy night ride around the magnetic-tile castle Jamie built.</p></header>
 <div class="screen">
-<canvas id="cv" aria-label="3D animated snowy night scene of Miles's glowing tile house and Jamie's castle joined by a figure-eight track over a red bridge, with a red steam train" role="img"></canvas>
+<canvas id="cv" aria-label="3D animated snowy night scene of Jamie's glowing tile castle with a red steam train and two coaches circling it" role="img"></canvas>
 <div class="card" id="c1"><div class="a">ONE SNOWY NIGHT</div></div>
-<div class="card" id="c2"><div><div class="t">Miles's Giant House</div><div class="s">Built by Miles &nbsp;·&nbsp; Starring Engine No. 4</div></div></div>
+<div class="card" id="c2"><div><div class="t">Jamie's Looping Castle</div><div class="s">Built by Jamie &nbsp;·&nbsp; Starring Engine No. 4</div></div></div>
 <div id="nogl" hidden>This animation needs WebGL 2, which this browser doesn't offer.</div>
 </div>
 <div class="controls">
@@ -50,11 +50,11 @@ button[aria-pressed=true]{background:var(--gold);color:#1a1408;border-color:var(
 <button id="snd" aria-pressed="false">Sound</button>
 <button id="pause">Pause</button>
 </div>
-<p class="note">Tap the train to make it whistle. In "Look around", drag to turn the camera and pinch or scroll to zoom. Built by Miles out of magnetic tiles, with the red bridge from the train set.</p>
+<p class="note">Tap the train to make it whistle. In "Look around", drag to turn the camera and pinch or scroll to zoom. Built by Jamie out of magnetic tiles and wooden track.</p>
 <script>
 'use strict';
 (function(){
-const SCENE='miles',J=SCENE==='jamie';
+const SCENE='jamie',J=SCENE==='jamie';
 const cv=document.getElementById('cv');
 const gl=cv.getContext('webgl2',{antialias:false,alpha:false,powerPreference:'high-performance'});
 if(!gl){document.getElementById('nogl').hidden=false;return}
